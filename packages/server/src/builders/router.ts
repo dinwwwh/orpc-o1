@@ -6,7 +6,15 @@ export class ServerRouterBuilder<
   TContext extends ServerContext = ServerContext,
   TContract extends RouterContractSpecification = RouterContractSpecification
 > {
-  constructor(private routerContract: TContract) {}
+  public __internal__: {
+    contract: TContract
+  }
+
+  constructor(routerContract: TContract) {
+    this.__internal__ = {
+      contract: routerContract,
+    }
+  }
 
   router(
     router: ServerRouterSpecification<TContext, TContract>

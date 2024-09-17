@@ -1,4 +1,7 @@
+import { initORPCContract } from '@orpc/contract'
+import { initORPCServer } from 'src'
 import { findUserContract, findUserRouterContract } from 'src/__tests__/contract'
+import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
 import { ServerBuilder } from './server'
 
@@ -39,5 +42,55 @@ it('can handle contract', () => {
   server.contract(findUserRouterContract).router({
     // @ts-expect-error find must match
     find: server.contract(findUserContract),
+  })
+})
+
+it('can chain on contract implement', () => {
+  const orpc = initORPCServer.contract(
+    initORPCContract.router({
+      ping: initORPCContract.route({
+        method: 'GET',
+        path: '/ping',
+      }),
+
+      users: {
+        find: initORPCContract.route({
+          method: 'GET',
+          path: '/users/{id}',
+        }),
+        create: initORPCContract.route({
+          method: 'POST',
+          path: '/users',
+        }),
+
+        pets: {
+          find: initORPCContract
+            .route({
+              method: 'GET',
+              path: '/pets/{id}',
+            })
+            .params(
+              object({
+                id: string(),
+              })
+            ),
+        },
+      },
+    })
+  )
+
+  orpc.router({
+    ping: orpc.ping.handler('' as any),
+    users: {
+      find: orpc.users.find.handler('' as any),
+      create: orpc.users.create.handler('' as any),
+      pets: {
+        find: orpc.users.pets.find.handler(({ params }) => {
+          expectTypeOf(params).toEqualTypeOf<{ id: string }>()
+
+          return '' as any
+        }),
+      },
+    },
   })
 })
