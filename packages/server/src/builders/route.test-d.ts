@@ -1,7 +1,7 @@
 import { initORPCContract } from '@orpc/contract'
 import { createUserContract } from 'src/__tests__/contract'
 import { NewUserSchema } from 'src/__tests__/schemas'
-import { InferOutput, object, string } from 'valibot'
+import { InferOutput, number, object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
 import { ServerRouteBuilder } from './route'
 
@@ -133,4 +133,61 @@ it('does not allow handler return if not specified', () => {
     // @ts-expect-error handler must not return
     () => ({})
   )
+})
+
+it('middleware can modify context', () => {
+  const routeContract = initORPCContract.route({ method: 'GET', path: '/' })
+
+  new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
+    .middleware(({ context }) => {
+      expectTypeOf(context).toEqualTypeOf<{ userId: string }>()
+
+      return {
+        context: {
+          you: 'are',
+        },
+      }
+    })
+    .middleware(({ context }) => {
+      expectTypeOf(context).toEqualTypeOf<{ you: string }>()
+
+      return {
+        context: {
+          you: 123,
+        },
+      }
+    })
+    .handler(({ context }) => {
+      expectTypeOf(context).toEqualTypeOf<{ you: number }>()
+    })
+})
+
+it('middleware can response right away', () => {
+  const routeContract = initORPCContract.route({ method: 'GET', path: '/' }).response({
+    status: 200,
+    body: object({
+      you: number(),
+    }),
+  })
+
+  new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
+    .middleware(() => {
+      return {
+        response: {
+          status: 200,
+          body: {
+            you: 123,
+          },
+        },
+      }
+    })
+    // @ts-expect-error body mismatch
+    .middleware(() => {
+      return {
+        response: {
+          status: 200,
+          body: {},
+        },
+      }
+    })
 })

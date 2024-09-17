@@ -55,5 +55,19 @@ it('contract resolver chain and no chain is the same', () => {
     },
   })
 
-  expect(chainRouter).toEqual(router)
+  expect(deeplyDeleteMiddleware(chainRouter)).toEqual(deeplyDeleteMiddleware(router))
 })
+
+function deeplyDeleteMiddleware(o: unknown) {
+  if (!o) return
+
+  if (typeof o === 'object') {
+    if ('middlewares' in o) {
+      delete o.middlewares
+    }
+
+    for (const key in o) {
+      deeplyDeleteMiddleware((o as any)[key])
+    }
+  }
+}

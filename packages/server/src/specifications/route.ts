@@ -3,7 +3,6 @@ import {
   RouteResponse,
   RouteResponses,
 } from '@orpc/contract/__internal__/specifications/route'
-import { ValidationSchema } from '@orpc/contract/__internal__/types'
 import { OptionalOnUndefined, ServerContext } from 'src/types'
 import { IsEqual, Promisable } from 'type-fest'
 import { InferInput, InferOutput } from 'valibot'
@@ -45,21 +44,15 @@ export type ServerRouteHandlerInput<
   infer THeadersSchema,
   infer TBodySchema
 >
-  ? OptionalOnUndefined<{
+  ? {
       method: TMethod
       path: TPath
       context: TContext
-      params: IsEqual<TParamsSchema, ValidationSchema> extends true
-        ? unknown
-        : InferOutput<TParamsSchema>
-      query: IsEqual<TQuerySchema, ValidationSchema> extends true
-        ? unknown
-        : InferOutput<TQuerySchema>
-      headers: IsEqual<THeadersSchema, ValidationSchema> extends true
-        ? unknown
-        : InferOutput<THeadersSchema>
-      body: IsEqual<TBodySchema, ValidationSchema> extends true ? unknown : InferOutput<TBodySchema>
-    }>
+      params: InferOutput<TParamsSchema>
+      query: InferOutput<TQuerySchema>
+      headers: InferOutput<THeadersSchema>
+      body: InferOutput<TBodySchema>
+    }
   : unknown
 
 export type ServerRouteHandlerOutput<
