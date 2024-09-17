@@ -1,0 +1,60 @@
+{
+  "name": "@orpc/server",
+  "type": "module",
+  "version": "0.0.0",
+  "author": {
+    "name": "dinwwwh",
+    "email": "dinwwwh@gmail.com",
+    "url": "https://dinwwwh.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/dinwwwh/dinwwwh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dinwwwh/dinwwwh.git",
+    "directory": "examples/typescript-vite-package"
+  },
+  "keywords": [
+    "dinwwwh"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/src/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+      },
+      "./__internal__/*": {
+        "types": "./dist/src/*.d.ts"
+      }
+    }
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./__internal__/*": "./src/*.ts"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "build:watch": "vite build --watch",
+    "type:check": "tsc -b",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
+  },
+  "devDependencies": {
+    "@dinwwwh/tsconfig": "latest",
+    "@types/node": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "vite-plugin-dts": "latest",
+    "vite-tsconfig-paths": "latest",
+    "vitest": "^2.1.1"
+  },
+  "dependencies": {
+    "type-fest": "^4.26.1"
+  }
+}
