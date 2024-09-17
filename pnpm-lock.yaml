@@ -41,6 +41,9 @@ importers:
 
   packages/server:
     dependencies:
+      trek-router:
+        specifier: ^1.2.0
+        version: 1.2.0
       type-fest:
         specifier: ^4.26.1
         version: 4.26.1
@@ -723,6 +726,10 @@ packages:
   to-fast-properties@2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
+
+  trek-router@1.2.0:
+    resolution: {integrity: sha512-43A1krE0myUO2DV+RQBUYLwK3Q5osszQ65jFe/TFGWMnhdZx0nvq2GQXecXwIPU0weSFo1pYmHfhHHaUPPIRNg==}
+    engines: {node: '>= 6'}
 
   tsconfck@3.1.3:
     resolution: {integrity: sha512-ulNZP1SVpRDesxeMLON/LtWM8HIgAJEIVpVVhBM6gsmvQ8+Rh+ZG7FWGvHh7Ah3pRABwVJWklWCr/BTZSv0xnQ==}
@@ -1445,6 +1452,8 @@ snapshots:
   tinyspy@3.0.2: {}
 
   to-fast-properties@2.0.0: {}
+
+  trek-router@1.2.0: {}
 
   tsconfck@3.1.3(typescript@5.6.2):
     optionalDependencies:

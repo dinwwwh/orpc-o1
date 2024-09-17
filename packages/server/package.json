@@ -25,6 +25,11 @@
         "import": "./dist/index.js",
         "default": "./dist/index.js"
       },
+      "./adapters/fetch": {
+        "types": "./dist/src/adapters/fetch.d.ts",
+        "import": "./dist/fetch.js",
+        "default": "./dist/fetch.js"
+      },
       "./__internal__/*": {
         "types": "./dist/src/*.d.ts"
       }
@@ -32,6 +37,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./adapters/fetch": "./src/adapters/fetch.ts",
     "./__internal__/*": "./src/*.ts"
   },
   "files": [
@@ -58,6 +64,7 @@
     "vitest": "^2.1.1"
   },
   "dependencies": {
+    "trek-router": "^1.2.0",
     "type-fest": "^4.26.1",
     "valibot": "^0.42.0"
   }

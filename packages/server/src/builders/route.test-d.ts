@@ -61,7 +61,7 @@ it('infer correct output', () => {
   new ServerRouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
     async () => {
       return {
-        status: 200,
+        status: 201,
         body: {
           id: 'id',
           name: 'name',

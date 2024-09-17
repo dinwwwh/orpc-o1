@@ -12,7 +12,10 @@ export default defineConfig({
     ssr: true, // Prevent bundle all dependencies (except linked dependencies, and above noExternal list) and make it usable in node.js
     target: 'es2022',
     lib: {
-      entry: [path.resolve(__dirname, './src/index.ts')],
+      entry: [
+        path.resolve(__dirname, './src/index.ts'),
+        path.resolve(__dirname, './src/adapters/fetch.ts'),
+      ],
       formats: ['es'],
     },
   },
@@ -27,7 +30,7 @@ export default defineConfig({
            * vite-tsconfig-paths also support this,
            * but vite-plugin-dts not, so we need explicitly define it here
            */
-          src: ['./src'],
+          'src': ['./src'],
           'src/*': ['./src/*'],
         },
       },

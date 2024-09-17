@@ -26,7 +26,7 @@ export const createUserContract = orpc
   .body(NewUserSchema)
   .response({
     description: 'create user',
-    status: 200,
+    status: 201,
     body: UserSchema,
   })
   .response({
