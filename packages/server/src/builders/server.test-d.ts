@@ -81,7 +81,7 @@ it('can chain on contract implement', () => {
 
   orpc.router({
     ping: orpc.ping.handler('' as any),
-    users: {
+    users: orpc.users.router({
       find: orpc.users.find.handler('' as any),
       create: orpc.users.create.handler('' as any),
       pets: {
@@ -91,6 +91,6 @@ it('can chain on contract implement', () => {
           return '' as any
         }),
       },
-    },
+    }),
   })
 })

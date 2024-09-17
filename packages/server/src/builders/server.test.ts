@@ -37,21 +37,21 @@ it('contract resolver chain and no chain is the same', () => {
 
   const chainRouter = orpc.router({
     ping: orpc.ping.handler(anyFn),
-    users: {
+    users: orpc.users.router({
       find: orpc.users.find.handler(anyFn),
       pets: {
         find: orpc.users.pets.find.handler(anyFn),
       },
-    },
+    }),
   })
 
   const router = orpc.router({
     ping: initORPCServer.contract(contract.ping).handler(anyFn),
     users: {
       find: initORPCServer.contract(contract.users.find).handler(anyFn),
-      pets: {
+      pets: initORPCServer.contract(contract.users.pets).router({
         find: initORPCServer.contract(contract.users.pets.find).handler(anyFn),
-      },
+      }),
     },
   })
 
