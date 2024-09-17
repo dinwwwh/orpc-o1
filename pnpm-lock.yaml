@@ -9,6 +9,13 @@ importers:
   .: {}
 
   packages/contract:
+    dependencies:
+      type-fest:
+        specifier: ^4.26.1
+        version: 4.26.1
+      valibot:
+        specifier: ^0.42.0
+        version: 0.42.0(typescript@5.6.2)
     devDependencies:
       '@dinwwwh/tsconfig':
         specifier: ^0.0.6
@@ -696,6 +703,10 @@ packages:
       typescript:
         optional: true
 
+  type-fest@4.26.1:
+    resolution: {integrity: sha512-yOGpmOAL7CkKe/91I5O3gPICmJNLJ1G4zFYVAsRHg7M64biSnPtRj0WNQt++bRkjYOqjWXrhnUw1utzmVErAdg==}
+    engines: {node: '>=16'}
+
   typescript@5.4.2:
     resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
     engines: {node: '>=14.17'}
@@ -718,6 +729,14 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
+
+  valibot@0.42.0:
+    resolution: {integrity: sha512-igMdmHXxDiQY714ssh9bGisMqJ2yg7sko1KOmv/omnrIacGtP6mGrbvVT1IuV1bDrHyG9ybgpHwG1UElDiDCLg==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   vite-node@2.1.1:
     resolution: {integrity: sha512-N/mGckI1suG/5wQI35XeR9rsMsPqKXzq1CdUndzVstBj/HvyxxGctwnK6WX43NGt5L3Z5tcRf83g4TITKJhPrA==}
@@ -1400,6 +1419,8 @@ snapshots:
     optionalDependencies:
       typescript: 5.6.2
 
+  type-fest@4.26.1: {}
+
   typescript@5.4.2: {}
 
   typescript@5.6.2: {}
@@ -1413,6 +1434,10 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  valibot@0.42.0(typescript@5.6.2):
+    optionalDependencies:
+      typescript: 5.6.2
 
   vite-node@2.1.1(@types/node@22.5.5):
     dependencies:
