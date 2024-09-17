@@ -1,10 +1,12 @@
 import { HTTPMethod, HTTPPath, HTTPStatus, ValidationSchema } from 'src/types'
-import type { Merge } from 'type-fest'
+import { IsEqual, Merge } from 'type-fest'
 
 export interface RouteResponse<
+  TStatus extends HTTPStatus = HTTPStatus,
   TBodySchema extends ValidationSchema = ValidationSchema,
   THeadersSchema extends ValidationSchema = ValidationSchema
 > {
+  status: TStatus
   description: string
   body?: TBodySchema
   headers?: THeadersSchema
@@ -110,7 +112,7 @@ export class RouteContractSpecification<
     TBody extends ValidationSchema = ValidationSchema,
     THeaders extends ValidationSchema = ValidationSchema
   >(opts: {
-    description: string
+    description?: string
     status: TStatus
     body?: TBody
     headers?: THeaders
@@ -121,10 +123,13 @@ export class RouteContractSpecification<
     TQuerySchema,
     THeadersSchema,
     TBodySchema,
-    Merge<TResponses, { [status in TStatus]: RouteResponse<TBody, THeaders> }>
+    IsEqual<TResponses, RouteResponses> extends true
+      ? { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }
+      : Merge<TResponses, { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }>
   > {
     this.__internal__.responses[opts.status] = {
-      description: opts.description,
+      status: opts.status,
+      description: opts.description ?? String(opts.status),
       body: opts.body,
       headers: opts.headers,
     }

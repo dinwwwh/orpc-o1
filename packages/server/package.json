@@ -45,6 +45,9 @@
     "test": "vitest run",
     "test:watch": "vitest watch"
   },
+  "directories": {
+    "@orpc/contract": "workspace:*"
+  },
   "devDependencies": {
     "@dinwwwh/tsconfig": "latest",
     "@types/node": "latest",
@@ -55,6 +58,7 @@
     "vitest": "^2.1.1"
   },
   "dependencies": {
-    "type-fest": "^4.26.1"
+    "type-fest": "^4.26.1",
+    "valibot": "^0.42.0"
   }
 }

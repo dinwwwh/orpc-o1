@@ -1,3 +1,5 @@
 /** dinwwwh */
 
-export const author = 'dinwwwh'
+import { ServerBuilder } from './builders/server'
+
+export const initORPCServer = new ServerBuilder<unknown>()
