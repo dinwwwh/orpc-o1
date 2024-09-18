@@ -1,5 +1,5 @@
-import { HTTPMethod, HTTPPath, HTTPStatus, ValidationSchema } from 'src/types'
 import { IsEqual, Merge } from 'type-fest'
+import { HTTPMethod, HTTPPath, HTTPStatus, ValidationSchema } from '../types'
 
 export interface RouteResponse<
   TStatus extends HTTPStatus = HTTPStatus,

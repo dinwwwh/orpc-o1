@@ -1,9 +1,5 @@
-import {
-  createUserContract,
-  findUserContract,
-  findUserRouterContract,
-} from 'src/__tests__/contract'
 import { it } from 'vitest'
+import { createUserContract, findUserContract, findUserRouterContract } from '../__tests__/contract'
 import { ServerBuilder } from './server'
 
 const server1 = new ServerBuilder<{ userId: string }>()

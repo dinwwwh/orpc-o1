@@ -1,6 +1,6 @@
-import { HTTPMethod } from '@orpc/contract/__internal__/types'
-import { RouterHandler } from 'src/handlers/router'
-import { ServerRouterSpecification } from 'src/specifications/router'
+import { HTTPMethod } from '@orpc/contract'
+import { RouterHandler } from '../handlers/router'
+import { ServerRouterSpecification } from '../specifications/router'
 
 export async function fetchRequestHandler<THandler extends RouterHandler>(opts: {
   request: Request

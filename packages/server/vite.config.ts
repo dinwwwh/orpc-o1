@@ -1,7 +1,6 @@
 import path from 'node:path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,25 +14,14 @@ export default defineConfig({
       entry: [
         path.resolve(__dirname, './src/index.ts'),
         path.resolve(__dirname, './src/adapters/fetch.ts'),
+        path.resolve(__dirname, './src/handlers/router.ts'),
       ],
       formats: ['es'],
     },
   },
   plugins: [
-    tsconfigPaths(),
     dts({
       tsconfigPath: path.resolve(__dirname, './tsconfig.app.json'),
-      compilerOptions: {
-        paths: {
-          /**
-           * Bellow paths work when you define baseUrl in typescript config by default
-           * vite-tsconfig-paths also support this,
-           * but vite-plugin-dts not, so we need explicitly define it here
-           */
-          'src': ['./src'],
-          'src/*': ['./src/*'],
-        },
-      },
     }),
   ],
 })

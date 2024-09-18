@@ -1,7 +1,6 @@
-import { ServerContext } from 'src/types'
-
-import { RouteContractSpecification } from '@orpc/contract/__internal__/specifications/route'
-import type { RouterContractSpecification } from '@orpc/contract/__internal__/specifications/router'
+import type { RouterContractSpecification } from '@orpc/contract'
+import { RouteContractSpecification } from '@orpc/contract'
+import { ServerContext } from '../types'
 import { ServerRouteBuilder } from './route'
 import { ServerRouterBuilder } from './router'
 
@@ -40,7 +39,7 @@ export function createChainableContractImplementer<
 
   return new Proxy(new ServerRouterBuilder(contract), {
     get(target, key) {
-      const contract = (target.__internal__.contract as RouterContractSpecification)[key] as
+      const contract = (target['🔓'].contract as RouterContractSpecification)[key] as
         | RouteContractSpecification
         | RouterContractSpecification
         | undefined

@@ -1,23 +1,19 @@
-import {
-  RouteContractSpecification,
-  RouteResponse,
-  RouteResponses,
-} from '@orpc/contract/__internal__/specifications/route'
-import { OptionalOnUndefined, ServerContext } from 'src/types'
+import { RouteContractSpecification, RouteResponse, RouteResponses } from '@orpc/contract'
 import { IsEqual, Promisable } from 'type-fest'
 import { InferInput, InferOutput } from 'valibot'
+import { OptionalOnUndefined, ServerContext } from '../types'
 
 export class ServerRouteSpecification<
   TContext extends ServerContext = ServerContext,
   TContract extends RouteContractSpecification = RouteContractSpecification
 > {
-  public __internal__: {
+  public ['🔓']: {
     contract: TContract
     handler: ServerRouteHandler<TContext, TContract>
   }
 
   constructor(opts: { contract: TContract; handler: ServerRouteHandler<TContext, TContract> }) {
-    this.__internal__ = {
+    this['🔓'] = {
       contract: opts.contract,
       handler: opts.handler,
     }

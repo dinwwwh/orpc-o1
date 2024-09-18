@@ -1,8 +1,8 @@
 import { initORPCContract } from '@orpc/contract'
-import { initORPCServer } from 'src'
-import { findUserContract, findUserRouterContract } from 'src/__tests__/contract'
 import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
+import { initORPCServer } from '..'
+import { findUserContract, findUserRouterContract } from '../__tests__/contract'
 import { ServerBuilder } from './server'
 
 it('works with context', () => {

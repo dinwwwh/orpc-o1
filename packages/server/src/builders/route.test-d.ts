@@ -1,8 +1,8 @@
 import { initORPCContract } from '@orpc/contract'
-import { createUserContract } from 'src/__tests__/contract'
-import { NewUserSchema } from 'src/__tests__/schemas'
 import { InferOutput, number, object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
+import { createUserContract } from '../__tests__/contract'
+import { NewUserSchema } from '../__tests__/schemas'
 import { ServerRouteBuilder } from './route'
 
 it('infer correct input', () => {

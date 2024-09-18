@@ -1,6 +1,5 @@
-import { RouteContractSpecification } from '@orpc/contract/__internal__/specifications/route'
-import { RouterContractSpecification } from '@orpc/contract/__internal__/specifications/router'
-import { ServerContext } from 'src/types'
+import { RouteContractSpecification, RouterContractSpecification } from '@orpc/contract'
+import { ServerContext } from '../types'
 import { ServerRouteSpecification } from './route'
 
 export type ServerRouterSpecification<

@@ -1,6 +1,6 @@
-import { RouteContractSpecification } from '@orpc/contract/__internal__/specifications/route'
-import { ServerContext } from 'src/types'
+import { RouteContractSpecification } from '@orpc/contract'
 import { Promisable } from 'type-fest'
+import { ServerContext } from '../types'
 import { ServerRouteHandlerInput, ServerRouteHandlerOutput } from './route'
 
 export interface ServerMiddlewareSpecification<

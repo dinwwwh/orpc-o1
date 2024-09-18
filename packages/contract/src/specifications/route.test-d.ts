@@ -1,6 +1,6 @@
-import { ValidationSchema } from 'src/types'
 import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
+import { ValidationSchema } from '../types'
 import { RouteContractSpecification, RouteResponses } from './route'
 
 const route = new RouteContractSpecification({ method: 'GET', path: '/foo' })

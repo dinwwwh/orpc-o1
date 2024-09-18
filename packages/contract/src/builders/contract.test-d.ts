@@ -1,5 +1,5 @@
-import { RouteContractSpecification } from 'src/specifications/route'
 import { expectTypeOf, it } from 'vitest'
+import { RouteContractSpecification } from '../specifications/route'
 import { ContractBuilder } from './contract'
 
 const builder = new ContractBuilder()

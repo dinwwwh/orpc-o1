@@ -41,7 +41,7 @@ it('middleware can modify context', async () => {
       }
     })
 
-  const result = await handler.__internal__.handler({
+  const result = await handler['🔓'].handler({
     context: { userId: 'id' },
     body: undefined,
     headers: undefined,
@@ -103,7 +103,7 @@ it('middleware can response right away', async () => {
       }
     })
 
-  const result = await handler.__internal__.handler({
+  const result = await handler['🔓'].handler({
     context: { userId: 'id' },
     body: undefined,
     headers: undefined,

@@ -1,9 +1,9 @@
-import { RouteContractSpecification } from '@orpc/contract/__internal__/specifications/route'
-import { ServerRouteHandlerInput, ServerRouteSpecification } from 'src/specifications/route'
-import { ServerRouterSpecification } from 'src/specifications/router'
-import { convertOpenapiPathToTrekRouterPath } from 'src/utils'
+import { RouteContractSpecification } from '@orpc/contract'
 import Router from 'trek-router'
 import { isValiError, parseAsync } from 'valibot'
+import { ServerRouteHandlerInput, ServerRouteSpecification } from '../specifications/route'
+import { ServerRouterSpecification } from '../specifications/router'
+import { convertOpenapiPathToTrekRouterPath } from '../utils'
 
 export interface RouterHandler<
   TRouter extends ServerRouterSpecification = ServerRouterSpecification
@@ -36,7 +36,7 @@ export function createRouterHandler<T extends ServerRouterSpecification>(
       const item = routerSpec[key]
 
       if (item instanceof ServerRouteSpecification) {
-        const contract = item.__internal__.contract
+        const contract = item['🔓'].contract
 
         if (!(contract instanceof RouteContractSpecification)) {
           throw new Error(
@@ -71,7 +71,7 @@ export function createRouterHandler<T extends ServerRouterSpecification>(
         }
       }
 
-      const internalContract = routeSpec.__internal__.contract.__internal__
+      const internalContract = routeSpec['🔓'].contract.__internal__
 
       const params: Record<string, string> = {}
       for (const { name, value } of paramsArr) {
@@ -101,7 +101,7 @@ export function createRouterHandler<T extends ServerRouterSpecification>(
         })(),
       ])
 
-      const result = (await routeSpec.__internal__.handler({
+      const result = (await routeSpec['🔓'].handler({
         method: input.method,
         path: input.path,
         context: input.context,

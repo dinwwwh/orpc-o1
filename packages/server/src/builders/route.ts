@@ -1,27 +1,24 @@
-import { RouteContractSpecification } from '@orpc/contract/__internal__/specifications/route'
-import {
-  ServerMiddlewareOutput,
-  ServerMiddlewareSpecification,
-} from 'src/specifications/middleware'
+import { RouteContractSpecification } from '@orpc/contract'
+import { ServerMiddlewareOutput, ServerMiddlewareSpecification } from '../specifications/middleware'
 import {
   ServerRouteHandler,
   ServerRouteHandlerOutput,
   ServerRouteSpecification,
-} from 'src/specifications/route'
-import { ServerContext } from 'src/types'
+} from '../specifications/route'
+import { ServerContext } from '../types'
 
 export class ServerRouteBuilder<
   TContext extends ServerContext = ServerContext,
   TContract extends RouteContractSpecification = RouteContractSpecification,
   TCurrentContext extends ServerContext = TContext
 > {
-  public __internal__: {
+  public ['🔓']: {
     contract: TContract
     middlewares: ServerMiddlewareSpecification[]
   }
 
   constructor(private routeContract: TContract) {
-    this.__internal__ = {
+    this['🔓'] = {
       contract: routeContract,
       middlewares: [],
     }
@@ -36,7 +33,7 @@ export class ServerRouteBuilder<
       ? TCurrentContext
       : TContext
   > {
-    this.__internal__.middlewares.push(middleware)
+    this['🔓'].middlewares.push(middleware)
 
     return this as any
   }
@@ -49,7 +46,7 @@ export class ServerRouteBuilder<
       handler: async (input, ...others) => {
         let context: TContext = input.context
 
-        for (const middleware of this.__internal__.middlewares) {
+        for (const middleware of this['🔓'].middlewares) {
           const output = await middleware({ ...input, context: context }, ...others)
 
           if (typeof output !== 'object' || output === null) continue

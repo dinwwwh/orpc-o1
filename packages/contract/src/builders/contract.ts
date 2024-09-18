@@ -1,6 +1,6 @@
-import { RouteContractSpecification } from 'src/specifications/route'
-import { RouterContractSpecification } from 'src/specifications/router'
-import { HTTPMethod } from 'src/types'
+import { RouteContractSpecification } from '../specifications/route'
+import { RouterContractSpecification } from '../specifications/router'
+import { HTTPMethod } from '../types'
 
 export class ContractBuilder {
   route<TMethod extends HTTPMethod, TPath extends string>(opts: {

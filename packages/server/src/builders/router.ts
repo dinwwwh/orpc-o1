@@ -1,17 +1,17 @@
-import { RouterContractSpecification } from '@orpc/contract/__internal__/specifications/router'
-import { ServerRouterSpecification } from 'src/specifications/router'
-import { ServerContext } from 'src/types'
+import { RouterContractSpecification } from '@orpc/contract'
+import { ServerRouterSpecification } from '../specifications/router'
+import { ServerContext } from '../types'
 
 export class ServerRouterBuilder<
   TContext extends ServerContext = ServerContext,
   TContract extends RouterContractSpecification = RouterContractSpecification
 > {
-  public __internal__: {
+  public ['🔓']: {
     contract: TContract
   }
 
   constructor(routerContract: TContract) {
-    this.__internal__ = {
+    this['🔓'] = {
       contract: routerContract,
     }
   }

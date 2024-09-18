@@ -1,7 +1,6 @@
 {
   "extends": "@dinwwwh/tsconfig/dom-lib.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "types": ["vite/client"]
   },
   "references": [{ "path": "../contract/tsconfig.app.json" }],

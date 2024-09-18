@@ -1,6 +1,6 @@
-import { initORPCServer } from 'src'
-import { userRouterContract } from 'src/__tests__/contract'
 import { expect, it } from 'vitest'
+import { initORPCServer } from '..'
+import { userRouterContract } from '../__tests__/contract'
 import { createRouterHandler } from './router'
 
 const orpc = initORPCServer.context<{ auth?: { id: string } }>()
