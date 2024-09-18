@@ -37,6 +37,19 @@ importers:
         version: 2.1.1(@types/node@22.5.5)
 
   packages/openapi:
+    dependencies:
+      '@orpc/contract':
+        specifier: workspace:*
+        version: link:../contract
+      '@valibot/to-json-schema':
+        specifier: ^0.2.0
+        version: 0.2.0(valibot@0.42.0(typescript@5.6.2))
+      openapi3-ts:
+        specifier: ^4.4.0
+        version: 4.4.0
+      valibot:
+        specifier: ^0.42.0
+        version: 0.42.0(typescript@5.6.2)
     devDependencies:
       '@dinwwwh/tsconfig':
         specifier: latest
@@ -53,6 +66,9 @@ importers:
       vite-plugin-dts:
         specifier: latest
         version: 4.2.1(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2)(vite@5.4.6(@types/node@22.5.5))
+      vitest:
+        specifier: ^2.1.1
+        version: 2.1.1(@types/node@22.5.5)
 
   packages/server:
     dependencies:
@@ -381,6 +397,11 @@ packages:
   '@types/node@22.5.5':
     resolution: {integrity: sha512-Xjs4y5UPO/CLdzpgR6GirZJx36yScjh73+2NlLlkFRSoQN8B0DpfXPdZGnvVmLRLOsqDpOfTNv7D9trgGhmOIA==}
 
+  '@valibot/to-json-schema@0.2.0':
+    resolution: {integrity: sha512-xWaiV2iW6MKdaA02kCh3wtMygAzmsNeN5tqMe1elKJzm4lrrLhhYGP5wEgAbtRlob+/ohq2CawNDUHqUT2QZKA==}
+    peerDependencies:
+      valibot: '>=0.31.0 <1'
+
   '@vitest/expect@2.1.1':
     resolution: {integrity: sha512-YeueunS0HiHiQxk+KEOnq/QMzlUuOzbU1Go+PgAsHvvv3tUkJPm9xWt+6ITNTlzsMXUjmgm5T+U7KBPK2qQV6w==}
 
@@ -629,6 +650,9 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  openapi3-ts@4.4.0:
+    resolution: {integrity: sha512-9asTNB9IkKEzWMcHmVZE7Ts3kC9G7AFHfs8i7caD8HbI76gEjdkId4z/AkP83xdZsH7PLAnnbl47qZkXuxpArw==}
+
   path-browserify@1.0.1:
     resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
 
@@ -857,6 +881,11 @@ packages:
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
+  yaml@2.5.1:
+    resolution: {integrity: sha512-bLQOjaX/ADgQ20isPJRvF0iRUHIxVhYvr53Of7wGcWlO2jvtUlH5m87DsmulFVxRpNLOnI4tB6p/oh8D7kpn9Q==}
+    engines: {node: '>= 14'}
+    hasBin: true
+
 snapshots:
 
   '@babel/helper-string-parser@7.24.8': {}
@@ -1078,6 +1107,10 @@ snapshots:
   '@types/node@22.5.5':
     dependencies:
       undici-types: 6.19.8
+
+  '@valibot/to-json-schema@0.2.0(valibot@0.42.0(typescript@5.6.2))':
+    dependencies:
+      valibot: 0.42.0(typescript@5.6.2)
 
   '@vitest/expect@2.1.1':
     dependencies:
@@ -1348,6 +1381,10 @@ snapshots:
 
   nanoid@3.3.7: {}
 
+  openapi3-ts@4.4.0:
+    dependencies:
+      yaml: 2.5.1
+
   path-browserify@1.0.1: {}
 
   path-parse@1.0.7: {}
@@ -1551,3 +1588,5 @@ snapshots:
       stackback: 0.0.2
 
   yallist@4.0.0: {}
+
+  yaml@2.5.1: {}

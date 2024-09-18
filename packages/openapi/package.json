@@ -41,13 +41,22 @@
   "scripts": {
     "build": "vite build",
     "build:watch": "vite build --watch",
-    "type:check": "tsc -b"
+    "type:check": "tsc -b",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
   },
   "devDependencies": {
     "@dinwwwh/tsconfig": "latest",
     "@types/node": "latest",
     "typescript": "latest",
     "vite": "latest",
-    "vite-plugin-dts": "latest"
+    "vite-plugin-dts": "latest",
+    "vitest": "^2.1.1"
+  },
+  "dependencies": {
+    "@orpc/contract": "workspace:*",
+    "@valibot/to-json-schema": "^0.2.0",
+    "openapi3-ts": "^4.4.0",
+    "valibot": "^0.42.0"
   }
 }

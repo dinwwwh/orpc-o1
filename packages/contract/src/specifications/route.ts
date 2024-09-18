@@ -23,9 +23,10 @@ export class RouteContractSpecification<
   TBodySchema extends ValidationSchema = ValidationSchema,
   TResponses extends RouteResponses = RouteResponses
 > {
-  public __internal__: {
+  public ['🔒']: {
     method: TMethod
     path: TPath
+    summary?: string
     description?: string
     ParamsSchema?: TParamsSchema
     QuerySchema?: TQuerySchema
@@ -34,16 +35,23 @@ export class RouteContractSpecification<
     responses: TResponses
   }
 
-  constructor(opts: { method: TMethod; path: TPath }) {
-    this.__internal__ = {
+  constructor(opts: { method: TMethod; path: TPath; description?: string; summary?: string }) {
+    this['🔒'] = {
       method: opts.method,
       path: opts.path,
       responses: {} as any,
+      summary: opts.summary,
+      description: opts.description,
     }
   }
 
+  summary(summary: string): this {
+    this['🔒'].summary = summary
+    return this
+  }
+
   description(description: string): this {
-    this.__internal__.description = description
+    this['🔒'].description = description
     return this
   }
 
@@ -58,7 +66,7 @@ export class RouteContractSpecification<
     TBodySchema,
     TResponses
   > {
-    this.__internal__.ParamsSchema = schema as any
+    this['🔒'].ParamsSchema = schema as any
     return this as any
   }
 
@@ -73,7 +81,7 @@ export class RouteContractSpecification<
     TBodySchema,
     TResponses
   > {
-    this.__internal__.QuerySchema = schema as any
+    this['🔒'].QuerySchema = schema as any
     return this as any
   }
 
@@ -88,7 +96,7 @@ export class RouteContractSpecification<
     TBodySchema,
     TResponses
   > {
-    this.__internal__.HeadersSchema = schema as any
+    this['🔒'].HeadersSchema = schema as any
     return this as any
   }
 
@@ -103,7 +111,7 @@ export class RouteContractSpecification<
     TSchema,
     TResponses
   > {
-    this.__internal__.BodySchema = schema as any
+    this['🔒'].BodySchema = schema as any
     return this as any
   }
 
@@ -127,7 +135,7 @@ export class RouteContractSpecification<
       ? { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }
       : Merge<TResponses, { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }>
   > {
-    this.__internal__.responses[opts.status] = {
+    this['🔒'].responses[opts.status] = {
       status: opts.status,
       description: opts.description ?? String(opts.status),
       body: opts.body,

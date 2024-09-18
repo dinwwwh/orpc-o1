@@ -16,7 +16,7 @@ type Internal = {
 }
 
 it('works after construction', () => {
-  expectTypeOf(route.__internal__).toMatchTypeOf<Internal>()
+  expectTypeOf(route['🔒']).toMatchTypeOf<Internal>()
 })
 
 it('can set schema', () => {
@@ -24,18 +24,10 @@ it('can set schema', () => {
     id: string(),
   })
 
-  expectTypeOf(route.params(schema).__internal__.ParamsSchema).toMatchTypeOf<
-    typeof schema | undefined
-  >()
-  expectTypeOf(route.query(schema).__internal__.QuerySchema).toMatchTypeOf<
-    typeof schema | undefined
-  >()
-  expectTypeOf(route.headers(schema).__internal__.HeadersSchema).toMatchTypeOf<
-    typeof schema | undefined
-  >()
-  expectTypeOf(route.body(schema).__internal__.BodySchema).toMatchTypeOf<
-    typeof schema | undefined
-  >()
+  expectTypeOf(route.params(schema)['🔒'].ParamsSchema).toMatchTypeOf<typeof schema | undefined>()
+  expectTypeOf(route.query(schema)['🔒'].QuerySchema).toMatchTypeOf<typeof schema | undefined>()
+  expectTypeOf(route.headers(schema)['🔒'].HeadersSchema).toMatchTypeOf<typeof schema | undefined>()
+  expectTypeOf(route.body(schema)['🔒'].BodySchema).toMatchTypeOf<typeof schema | undefined>()
 })
 
 it('can set responses', () => {
@@ -49,7 +41,7 @@ it('can set responses', () => {
       status: 200,
       description: 'foo',
       body: schema,
-    }).__internal__.responses[200]
+    })['🔒'].responses[200]
   ).toMatchTypeOf<{
     description: string
     body?: typeof schema
@@ -61,7 +53,7 @@ it('can set responses', () => {
       status: 500,
       description: 'foo',
       headers: schema,
-    }).__internal__.responses[500]
+    })['🔒'].responses[500]
   ).toMatchTypeOf<{
     description: string
     body?: ValidationSchema
@@ -93,7 +85,7 @@ it('can chain responses', () => {
       headers: schema2,
     })
 
-  expectTypeOf(route.__internal__.responses).toMatchTypeOf<{
+  expectTypeOf(route['🔒'].responses).toMatchTypeOf<{
     '200': {
       description: string
       body?: typeof schema1
