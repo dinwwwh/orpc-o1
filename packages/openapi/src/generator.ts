@@ -14,6 +14,7 @@ import {
   RequestBodyObject,
   ResponseObject,
   ResponsesObject,
+  SchemaObject,
 } from 'openapi3-ts/oas31'
 import { array, is, literal, nullish, object, record, safeParse, string, unknown } from 'valibot'
 
@@ -49,7 +50,7 @@ export function generateOpenApiSpec(
           const content: ContentObject = {}
 
           content['application/json'] = {
-            schema: toJsonSchema(internal.BodySchema, { force: true }),
+            schema: toJsonSchema(internal.BodySchema, { force: true }) as SchemaObject,
             // TODO: examples
             // TODO: example
           }
@@ -70,7 +71,7 @@ export function generateOpenApiSpec(
 
             if (response.body) {
               content['application/json'] = {
-                schema: toJsonSchema(response.body, { force: true }),
+                schema: toJsonSchema(response.body, { force: true }) as SchemaObject,
                 // TODO: examples
                 // TODO: example
               }
@@ -84,11 +85,15 @@ export function generateOpenApiSpec(
               const headers: Record<string, HeaderObject> = {}
 
               for (const parameter of headerParameters) {
+                // * By OpenAPI spec, response header should not have `name` and `in`
                 const header = {
                   ...parameter,
                   name: undefined,
                   in: undefined,
                 }
+
+                delete header.name
+                delete header.in
 
                 headers[parameter.name] = header
               }
@@ -153,9 +158,9 @@ function getPathParameters(path: string, schema?: ValidationSchema): ParameterOb
         : undefined,
       schema: parsedSchema.success
         ? is(object({}), parsedSchema.output.properties?.[param])
-          ? parsedSchema.output.properties[param]
-          : undefined
-        : undefined,
+          ? (parsedSchema.output.properties[param] as SchemaObject)
+          : { type: 'string' }
+        : { type: 'string' },
       // TODO: example
       // TODO: examples
     })) ?? []
@@ -183,7 +188,7 @@ function getParametersFromSchema(
       in: in_,
       required: (jsonSchema.required ?? []).includes(name),
       description: is(object({ description: string() }), schema) ? schema.description : undefined,
-      schema: is(object({}), schema) ? schema : undefined,
+      schema: is(object({}), schema) ? (schema as SchemaObject) : { type: 'string' },
       // TODO: example
       // TODO: examples
     }

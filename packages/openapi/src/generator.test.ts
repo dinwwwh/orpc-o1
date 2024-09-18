@@ -114,7 +114,7 @@ it('with params', () => {
         get: {
           deprecated: undefined,
           parameters: [
-            { name: 'name', in: 'path', required: true, schema: undefined },
+            { name: 'name', in: 'path', required: true, schema: { type: 'string' } },
             {
               name: 'age',
               in: 'path',

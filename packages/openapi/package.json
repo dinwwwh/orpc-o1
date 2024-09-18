@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@dinwwwh/tsconfig": "latest",
+    "@readme/openapi-parser": "^2.6.0",
     "@types/node": "latest",
     "typescript": "latest",
     "vite": "latest",
