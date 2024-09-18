@@ -28,6 +28,7 @@ it('simple case', () => {
           path: '/ping',
           summary: 'route summary',
           description: 'route description',
+          deprecated: true,
         })
         .response({
           status: 200,
@@ -54,6 +55,7 @@ it('simple case', () => {
         get: {
           summary: 'route summary',
           description: 'route description',
+          deprecated: true,
           responses: {
             '200': {
               description: 'response description',
@@ -110,9 +112,16 @@ it('with params', () => {
     paths: {
       '/ping/{name}/{age}': {
         get: {
+          deprecated: undefined,
           parameters: [
-            { name: 'name', in: 'path', required: true },
-            { name: 'age', in: 'path', required: true, description: 'age description' },
+            { name: 'name', in: 'path', required: true, schema: undefined },
+            {
+              name: 'age',
+              in: 'path',
+              required: true,
+              schema: { type: 'number' },
+              description: 'age description',
+            },
           ],
           responses: {
             '200': {
@@ -184,9 +193,28 @@ it('with query & headers', () => {
       '/ping': {
         get: {
           parameters: [
-            { name: 'search', in: 'query', required: false },
-            { name: 'limit', in: 'query', required: true, description: 'limit description' },
-            { name: 'x-token', in: 'header', required: true, description: 'x-token description' },
+            {
+              name: 'search',
+              in: 'query',
+              required: false,
+              schema: {
+                type: 'string',
+              },
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              required: true,
+              description: 'limit description',
+              schema: { type: 'integer', minimum: 1, maximum: 50 },
+            },
+            {
+              name: 'x-token',
+              in: 'header',
+              required: true,
+              description: 'x-token description',
+              schema: { type: 'string' },
+            },
           ],
           responses: {
             '200': {

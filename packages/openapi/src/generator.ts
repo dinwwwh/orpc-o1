@@ -51,6 +51,7 @@ export function generateOpenApiSpec(
           content['application/json'] = {
             schema: toJsonSchema(internal.BodySchema, { force: true }),
             // TODO: examples
+            // TODO: example
           }
 
           return {
@@ -70,10 +71,11 @@ export function generateOpenApiSpec(
             if (response.body) {
               content['application/json'] = {
                 schema: toJsonSchema(response.body, { force: true }),
+                // TODO: examples
+                // TODO: example
               }
             }
 
-            // TODO: content.examples
             let headers: Record<string, HeaderObject> | undefined = (() => {
               if (!response.headers) return undefined
 
@@ -108,6 +110,7 @@ export function generateOpenApiSpec(
           [internal.method.toLowerCase()]: {
             summary: internal.summary,
             description: internal.description,
+            deprecated: internal.deprecated,
             parameters: [
               ...getPathParameters(internal.path, internal.ParamsSchema),
               ...(internal.QuerySchema
@@ -117,8 +120,6 @@ export function generateOpenApiSpec(
                 ? getParametersFromSchema(internal.HeadersSchema, 'header')
                 : []),
             ],
-            // TODO: tags
-            // TODO: deprecated
             requestBody,
             responses,
           } satisfies OperationObject,
@@ -150,6 +151,13 @@ function getPathParameters(path: string, schema?: ValidationSchema): ParameterOb
           ? parsedSchema.output.properties[param].description
           : undefined
         : undefined,
+      schema: parsedSchema.success
+        ? is(object({}), parsedSchema.output.properties?.[param])
+          ? parsedSchema.output.properties[param]
+          : undefined
+        : undefined,
+      // TODO: example
+      // TODO: examples
     })) ?? []
 
   return params
@@ -175,6 +183,9 @@ function getParametersFromSchema(
       in: in_,
       required: (jsonSchema.required ?? []).includes(name),
       description: is(object({ description: string() }), schema) ? schema.description : undefined,
+      schema: is(object({}), schema) ? schema : undefined,
+      // TODO: example
+      // TODO: examples
     }
   })
 

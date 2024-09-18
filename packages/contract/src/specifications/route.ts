@@ -28,6 +28,7 @@ export class RouteContractSpecification<
     path: TPath
     summary?: string
     description?: string
+    deprecated?: boolean
     ParamsSchema?: TParamsSchema
     QuerySchema?: TQuerySchema
     HeadersSchema?: THeadersSchema
@@ -35,13 +36,20 @@ export class RouteContractSpecification<
     responses: TResponses
   }
 
-  constructor(opts: { method: TMethod; path: TPath; description?: string; summary?: string }) {
+  constructor(opts: {
+    method: TMethod
+    path: TPath
+    description?: string
+    summary?: string
+    deprecated?: boolean
+  }) {
     this['🔒'] = {
       method: opts.method,
       path: opts.path,
       responses: {} as any,
       summary: opts.summary,
       description: opts.description,
+      deprecated: opts.deprecated,
     }
   }
 
@@ -52,6 +60,11 @@ export class RouteContractSpecification<
 
   description(description: string): this {
     this['🔒'].description = description
+    return this
+  }
+
+  deprecated(deprecated: boolean): this {
+    this['🔒'].deprecated = deprecated
     return this
   }
 
