@@ -45,8 +45,8 @@ export function createRouterHandler<T extends ServerRouterSpecification>(
         }
 
         router.add(
-          contract.__internal__.method,
-          convertOpenapiPathToTrekRouterPath(contract.__internal__.path),
+          contract['🔒'].method,
+          convertOpenapiPathToTrekRouterPath(contract['🔒'].path),
           item
         )
       } else {
@@ -71,7 +71,7 @@ export function createRouterHandler<T extends ServerRouterSpecification>(
         }
       }
 
-      const internalContract = routeSpec['🔓'].contract.__internal__
+      const internalContract = routeSpec['🔓'].contract['🔒']
 
       const params: Record<string, string> = {}
       for (const { name, value } of paramsArr) {
