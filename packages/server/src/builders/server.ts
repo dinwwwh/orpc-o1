@@ -1,5 +1,5 @@
 import type { RouterContractSpecification } from '@orpc/contract'
-import { RouteContractSpecification } from '@orpc/contract'
+import { isRouteContractSpecification, RouteContractSpecification } from '@orpc/contract'
 import { ServerContext } from '../types'
 import { ServerRouteBuilder } from './route'
 import { ServerRouterBuilder } from './router'
@@ -33,7 +33,7 @@ export function createChainableContractImplementer<
     | RouteContractSpecification
     | RouterContractSpecification
 >(contract: TContract): ChainableContractImplementer<TContext, TContract> {
-  if (contract instanceof RouteContractSpecification) {
+  if (isRouteContractSpecification(contract)) {
     return new ServerRouteBuilder(contract) as any
   }
 

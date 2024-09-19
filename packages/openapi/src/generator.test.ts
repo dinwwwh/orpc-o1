@@ -237,7 +237,8 @@ it('with query & headers', () => {
 it('with complex response', () => {
   const spec = generateOpenApiSpec(
     orpc.router({
-      ping: orpc
+      // SPECIAL CASE: prefix should be care
+      prefix: orpc
         .route({
           method: 'GET',
           path: '/ping',

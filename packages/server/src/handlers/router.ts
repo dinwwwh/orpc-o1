@@ -1,7 +1,11 @@
-import { RouteContractSpecification } from '@orpc/contract'
+import { isRouteContractSpecification } from '@orpc/contract'
 import Router from 'trek-router'
 import { isValiError, parseAsync } from 'valibot'
-import { ServerRouteHandlerInput, ServerRouteSpecification } from '../specifications/route'
+import {
+  isServerRouteSpecification,
+  ServerRouteHandlerInput,
+  ServerRouteSpecification,
+} from '../specifications/route'
 import { ServerRouterSpecification } from '../specifications/router'
 import { convertOpenapiPathToTrekRouterPath } from '../utils'
 
@@ -35,10 +39,10 @@ export function createRouterHandler<T extends ServerRouterSpecification>(
     for (const key in routerSpec) {
       const item = routerSpec[key]
 
-      if (item instanceof ServerRouteSpecification) {
+      if (isServerRouteSpecification(item)) {
         const contract = item['🔓'].contract
 
-        if (!(contract instanceof RouteContractSpecification)) {
+        if (!isRouteContractSpecification(contract)) {
           throw new Error(
             'Contract must be RouteContractSpecification, it expected never happened, please report this issue'
           )

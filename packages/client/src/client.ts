@@ -1,4 +1,5 @@
 import {
+  isRouteContractSpecification,
   OptionalOnUndefined,
   RouteContractSpecification,
   RouterContractSpecification,
@@ -20,7 +21,7 @@ export function createORPCClient<TContract extends RouterContractSpecification>(
 
         if (contract === undefined) return undefined
 
-        if (contract instanceof RouteContractSpecification) {
+        if (isRouteContractSpecification(contract)) {
           const internal = contract['🔒'] as RouteContractSpecification['🔒']
           return {
             async [internal.method.toLocaleLowerCase()](

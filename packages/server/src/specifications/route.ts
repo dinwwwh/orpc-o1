@@ -84,3 +84,10 @@ export type ServerRouteHandlerOutput<
           : unknown
       }[keyof TResponses]
   : unknown
+
+export function isServerRouteSpecification(value: unknown): value is ServerRouteSpecification {
+  if (value instanceof ServerRouteSpecification) return true
+
+  // TODO: should has a schema validation here
+  return false
+}

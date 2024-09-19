@@ -10,6 +10,12 @@ it('contract resolver chain and no chain is the same', () => {
       path: '/ping',
     }),
 
+    // Special case: prefix should be care
+    prefix: initORPCContract.route({
+      method: 'GET',
+      path: '/prefix',
+    }),
+
     users: {
       find: initORPCContract.route({
         method: 'GET',
@@ -37,6 +43,7 @@ it('contract resolver chain and no chain is the same', () => {
 
   const chainRouter = orpc.router({
     ping: orpc.ping.handler(anyFn),
+    prefix: orpc.prefix.handler(anyFn),
     users: orpc.users.router({
       find: orpc.users.find.handler(anyFn),
       pets: {
@@ -47,6 +54,7 @@ it('contract resolver chain and no chain is the same', () => {
 
   const router = orpc.router({
     ping: initORPCServer.contract(contract.ping).handler(anyFn),
+    prefix: initORPCServer.contract(contract.prefix).handler(anyFn),
     users: {
       find: initORPCServer.contract(contract.users.find).handler(anyFn),
       pets: initORPCServer.contract(contract.users.pets).router({

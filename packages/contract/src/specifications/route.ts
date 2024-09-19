@@ -1,4 +1,5 @@
 import { IsEqual, Merge } from 'type-fest'
+import { is, object, string } from 'valibot'
 import { HTTPMethod, HTTPPath, HTTPStatus, ValidationSchema } from '../types'
 import { MergeHTTPPaths, mergeHTTPPaths } from '../utils/http-path'
 
@@ -172,5 +173,21 @@ export class RouteContractSpecification<
     }
 
     return this as any
+  }
+}
+
+export function isRouteContractSpecification(value: unknown): value is RouteContractSpecification {
+  if (value instanceof RouteContractSpecification) return true
+
+  try {
+    return is(
+      object({
+        method: string(),
+        path: string(),
+      }),
+      (value as any)?.['🔒']
+    )
+  } catch {
+    return false
   }
 }

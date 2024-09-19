@@ -1,5 +1,5 @@
 import {
-  RouteContractSpecification,
+  isRouteContractSpecification,
   RouterContractSpecification,
   ValidationSchema,
 } from '@orpc/contract'
@@ -7,8 +7,8 @@ import { toJsonSchema } from '@valibot/to-json-schema'
 import {
   ContentObject,
   HeaderObject,
-  OpenAPIObject,
   OpenApiBuilder,
+  OpenAPIObject,
   OperationObject,
   ParameterObject,
   RequestBodyObject,
@@ -41,8 +41,8 @@ export function generateOpenApiSpec(
     for (const key in router) {
       const item = router[key]
 
-      if (item instanceof RouteContractSpecification) {
-        const internal = item['🔒'] as RouteContractSpecification['🔒']
+      if (isRouteContractSpecification(item)) {
+        const internal = item['🔒']
 
         const requestBody = (() => {
           if (!internal.BodySchema) return undefined

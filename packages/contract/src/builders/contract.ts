@@ -1,5 +1,9 @@
 import { RouteContractSpecification } from '../specifications/route'
-import { RouterContractSpecification } from '../specifications/router'
+import {
+  createEnhancedRouterContractSpecification,
+  EnhancedRouterContractSpecification,
+  RouterContractSpecification,
+} from '../specifications/router'
 import { HTTPMethod } from '../types'
 
 export class ContractBuilder {
@@ -9,7 +13,9 @@ export class ContractBuilder {
     return new RouteContractSpecification(opts)
   }
 
-  router<TRouter extends RouterContractSpecification>(router: TRouter): TRouter {
-    return router
+  router<TRouter extends RouterContractSpecification>(
+    router: TRouter
+  ): EnhancedRouterContractSpecification<TRouter> {
+    return createEnhancedRouterContractSpecification(router)
   }
 }

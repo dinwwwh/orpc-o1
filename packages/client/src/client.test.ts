@@ -7,7 +7,7 @@ import { expect, it } from 'vitest'
 import { createORPCClient } from './client'
 
 const contract = initORPCContract.router({
-  ping: initORPCContract.route({
+  prefix: initORPCContract.route({
     path: '/ping',
     method: 'GET',
   }),
@@ -53,7 +53,7 @@ const contract = initORPCContract.router({
 })
 
 const server = initORPCServer.contract(contract).router({
-  ping: initORPCServer.contract(contract.ping).handler(() => {}),
+  prefix: initORPCServer.contract(contract.prefix).handler(() => {}),
   user: {
     find: initORPCServer.contract(contract.user.find).handler(({ params }) => {
       return {
@@ -101,7 +101,7 @@ const client = createORPCClient({
 })
 
 it('works', async () => {
-  expect(await client.ping.get({})).toMatchObject({
+  expect(await client.prefix.get({})).toMatchObject({
     status: 204,
     body: undefined,
     headers: {},
