@@ -98,3 +98,20 @@ it('can chain responses', () => {
     }
   }>()
 })
+
+it('can prefix path', () => {
+  const route = new RouteContractSpecification({ method: 'GET', path: '/foo' }).prefix('/bar')
+  expectTypeOf(route['🔒'].path).toMatchTypeOf<'/bar/foo'>()
+
+  const route2 = new RouteContractSpecification({ method: 'GET', path: '/foo' }).prefix('/bar/')
+  expectTypeOf(route2['🔒'].path).toMatchTypeOf<'/bar/foo'>()
+
+  const route3 = new RouteContractSpecification({ method: 'GET', path: '/foo' }).prefix('/')
+  expectTypeOf(route3['🔒'].path).toMatchTypeOf<'/foo'>()
+
+  const route4 = new RouteContractSpecification({ method: 'GET', path: '/foo/' }).prefix('/')
+  expectTypeOf(route4['🔒'].path).toMatchTypeOf<'/foo/'>()
+
+  const route5 = new RouteContractSpecification({ method: 'GET', path: '/foo/' }).prefix('/api/')
+  expectTypeOf(route5['🔒'].path).toMatchTypeOf<'/api/foo'>()
+})

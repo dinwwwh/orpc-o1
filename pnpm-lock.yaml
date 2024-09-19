@@ -57,6 +57,9 @@ importers:
       '@types/node':
         specifier: ^22.5.5
         version: 22.5.5
+      radash:
+        specifier: ^12.1.0
+        version: 12.1.0
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -836,6 +839,10 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  radash@12.1.0:
+    resolution: {integrity: sha512-b0Zcf09AhqKS83btmUeYBS8tFK7XL2e3RvLmZcm0sTdF1/UUlHSsjXdCcWNxe7yfmAlPve5ym0DmKGtTzP6kVQ==}
+    engines: {node: '>=14.18.0'}
 
   regenerator-runtime@0.14.1:
     resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
@@ -1690,6 +1697,8 @@ snapshots:
       source-map-js: 1.2.1
 
   punycode@2.3.1: {}
+
+  radash@12.1.0: {}
 
   regenerator-runtime@0.14.1: {}
 

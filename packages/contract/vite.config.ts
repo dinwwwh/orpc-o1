@@ -5,7 +5,7 @@ import dts from 'vite-plugin-dts'
 // https://vitejs.dev/config/
 export default defineConfig({
   ssr: {
-    noExternal: [], // Packages that should be bundled if used in source code (e.g. packages export typescripts)
+    noExternal: ['radash'], // Packages that should be bundled if used in source code (e.g. packages export typescripts)
   },
   build: {
     ssr: true, // Prevent bundle all dependencies (except linked dependencies, and above noExternal list) and make it usable in node.js

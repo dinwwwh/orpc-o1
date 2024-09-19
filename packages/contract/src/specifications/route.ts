@@ -1,5 +1,6 @@
 import { IsEqual, Merge } from 'type-fest'
 import { HTTPMethod, HTTPPath, HTTPStatus, ValidationSchema } from '../types'
+import { MergeHTTPPaths, mergeHTTPPaths } from '../utils/http-path'
 
 export interface RouteResponse<
   TStatus extends HTTPStatus = HTTPStatus,
@@ -39,8 +40,8 @@ export class RouteContractSpecification<
   constructor(opts: {
     method: TMethod
     path: TPath
-    description?: string
     summary?: string
+    description?: string
     deprecated?: boolean
   }) {
     this['🔒'] = {
@@ -51,6 +52,21 @@ export class RouteContractSpecification<
       description: opts.description,
       deprecated: opts.deprecated,
     }
+  }
+
+  prefix<TPrefix extends HTTPPath>(
+    prefix: TPrefix
+  ): RouteContractSpecification<
+    TMethod,
+    MergeHTTPPaths<TPrefix, TPath>,
+    TParamsSchema,
+    TQuerySchema,
+    THeadersSchema,
+    TBodySchema,
+    TResponses
+  > {
+    this['🔒'].path = mergeHTTPPaths(prefix, this['🔒'].path) as any
+    return this as any
   }
 
   summary(summary: string): this {

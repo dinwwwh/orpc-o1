@@ -3,7 +3,11 @@
   "compilerOptions": {
     "types": ["vite/client", "@types/node"]
   },
-  "references": [{ "path": "./tsconfig.app.json" }],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "../contract/tsconfig.app.json" },
+    { "path": "../server/tsconfig.app.json" }
+  ],
   "include": [
     "src/**/*.test.*",
     "src/**/*.test-d.ts",

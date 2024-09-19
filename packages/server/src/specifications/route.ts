@@ -1,4 +1,5 @@
 import {
+  HTTPPath,
   OptionalOnUndefined,
   RouteContractSpecification,
   RouteResponse,
@@ -39,7 +40,7 @@ export type ServerRouteHandlerInput<
   TContract extends RouteContractSpecification = RouteContractSpecification
 > = TContract extends RouteContractSpecification<
   infer TMethod,
-  infer TPath,
+  infer _TPath,
   infer TParamsSchema,
   infer TQuerySchema,
   infer THeadersSchema,
@@ -47,7 +48,7 @@ export type ServerRouteHandlerInput<
 >
   ? {
       method: TMethod
-      path: TPath
+      path: HTTPPath
       context: TContext
       params: InferOutput<TParamsSchema>
       query: InferOutput<TQuerySchema>
