@@ -41,16 +41,22 @@
   "scripts": {
     "build": "vite build",
     "build:watch": "vite build --watch",
-    "type:check": "tsc -b"
+    "type:check": "tsc -b",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@orpc/contract": "workspace:*"
+    "@orpc/contract": "workspace:*",
+    "type-fest": "^4.26.1",
+    "valibot": "^0.42.0"
   },
   "devDependencies": {
     "@dinwwwh/tsconfig": "latest",
+    "@orpc/server": "workspace:*",
     "@types/node": "latest",
     "typescript": "latest",
     "vite": "latest",
-    "vite-plugin-dts": "latest"
+    "vite-plugin-dts": "latest",
+    "vitest": "^2.1.1"
   }
 }

@@ -22,7 +22,12 @@ export async function fetchRequestHandler<THandler extends RouterHandler>(opts: 
 
     if (!url.pathname.startsWith(prefix)) {
       // TODO: improve error handling
-      return new Response('Not Found', { status: 404 })
+      return new Response(
+        JSON.stringify({
+          message: 'Not Found',
+        }),
+        { status: 404 }
+      )
     }
 
     const body_text = await opts.request.text()

@@ -1,7 +1,12 @@
-import { RouteContractSpecification, RouteResponse, RouteResponses } from '@orpc/contract'
+import {
+  OptionalOnUndefined,
+  RouteContractSpecification,
+  RouteResponse,
+  RouteResponses,
+} from '@orpc/contract'
 import { IsEqual, Promisable } from 'type-fest'
 import { InferInput, InferOutput } from 'valibot'
-import { OptionalOnUndefined, ServerContext } from '../types'
+import { ServerContext } from '../types'
 
 export class ServerRouteSpecification<
   TContext extends ServerContext = ServerContext,
