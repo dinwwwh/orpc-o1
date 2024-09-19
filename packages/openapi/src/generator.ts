@@ -129,6 +129,8 @@ export function generateOpenApiSpec(
             responses,
           } satisfies OperationObject,
         })
+      } else {
+        addPathsToBuilderRecursively(item)
       }
     }
   }

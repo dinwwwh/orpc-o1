@@ -272,6 +272,20 @@ it('with complex response', () => {
             'x-max-retry': pipe(optional(string()), description('x-max-retry description')),
           }),
         }),
+
+      user: {
+        find: initORPCContract
+          .route({
+            method: 'GET',
+            path: '/user/{id}',
+          })
+          .response({
+            status: 200,
+            body: object({
+              id: string(),
+            }),
+          }),
+      },
     }),
     {
       info: {
@@ -358,6 +372,29 @@ it('with complex response', () => {
                 'x-max-retry': {
                   description: 'x-max-retry description',
                   required: false,
+                },
+              },
+            },
+          },
+        },
+      },
+      '/user/{id}': {
+        get: {
+          responses: {
+            '200': {
+              description: '200',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'string',
+                      },
+                    },
+                    required: ['id'],
+                    additionalProperties: false,
+                  },
                 },
               },
             },
