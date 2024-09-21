@@ -1,6 +1,5 @@
 import { UnknownRecord } from 'type-fest'
-import { HTTPPath } from '../types'
-import { MergeHTTPPaths } from '../utils/http-path'
+import { HTTPPath, MergeHTTPPaths } from '../types/http'
 import { isRouteContractSpecification, RouteContractSpecification } from './route'
 
 export type RouterContractSpecification<
@@ -9,7 +8,7 @@ export type RouterContractSpecification<
 
 export type MergeRouterContractSpecificationsHTTPPaths<
   TRouter extends RouterContractSpecification,
-  TPrefix extends HTTPPath = HTTPPath
+  TPrefix extends HTTPPath = any
 > = {
   [K in keyof TRouter]: TRouter[K] extends RouteContractSpecification<
     infer TMethod,

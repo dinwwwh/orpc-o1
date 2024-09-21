@@ -1,12 +1,19 @@
-import { IsEqual, Merge } from 'type-fest'
+import { IsAny, Merge } from 'type-fest'
 import { is, object, string } from 'valibot'
-import { HTTPMethod, HTTPPath, HTTPStatus, ValidationSchema } from '../types'
-import { MergeHTTPPaths, mergeHTTPPaths } from '../utils/http-path'
+import {
+  HTTPMethod,
+  HTTPPath,
+  HTTPStatus,
+  MergeHTTPPaths,
+  StandardizeHTTPPath,
+} from '../types/http'
+import { BodySchema, HeadersSchema, ParamsSchema, QuerySchema } from '../types/validation'
+import { mergeHTTPPaths } from '../utils/http'
 
 export interface RouteResponse<
-  TStatus extends HTTPStatus = HTTPStatus,
-  TBodySchema extends ValidationSchema = ValidationSchema,
-  THeadersSchema extends ValidationSchema = ValidationSchema
+  TStatus extends HTTPStatus = any,
+  TBodySchema extends BodySchema = any,
+  THeadersSchema extends HeadersSchema = any
 > {
   status: TStatus
   description: string
@@ -14,16 +21,16 @@ export interface RouteResponse<
   headers?: THeadersSchema
 }
 
-export type RouteResponses = Record<number, RouteResponse>
+export type RouteResponses = Partial<Record<HTTPStatus, RouteResponse>>
 
 export class RouteContractSpecification<
-  TMethod extends HTTPMethod = HTTPMethod,
-  TPath extends HTTPPath = HTTPPath,
-  TParamsSchema extends ValidationSchema = ValidationSchema,
-  TQuerySchema extends ValidationSchema = ValidationSchema,
-  THeadersSchema extends ValidationSchema = ValidationSchema,
-  TBodySchema extends ValidationSchema = ValidationSchema,
-  TResponses extends RouteResponses = RouteResponses
+  TMethod extends HTTPMethod = any,
+  TPath extends HTTPPath = any,
+  TParamsSchema extends ParamsSchema = any,
+  TQuerySchema extends QuerySchema = any,
+  THeadersSchema extends HeadersSchema = any,
+  TBodySchema extends BodySchema = any,
+  TResponses extends RouteResponses = any
 > {
   public ['🔒']: {
     method: TMethod
@@ -59,7 +66,7 @@ export class RouteContractSpecification<
     prefix: TPrefix
   ): RouteContractSpecification<
     TMethod,
-    MergeHTTPPaths<TPrefix, TPath>,
+    MergeHTTPPaths<StandardizeHTTPPath<TPrefix>, TPath>,
     TParamsSchema,
     TQuerySchema,
     THeadersSchema,
@@ -85,7 +92,7 @@ export class RouteContractSpecification<
     return this
   }
 
-  params<TSchema extends ValidationSchema>(
+  params<TSchema extends ParamsSchema>(
     schema: TSchema
   ): RouteContractSpecification<
     TMethod,
@@ -100,7 +107,7 @@ export class RouteContractSpecification<
     return this as any
   }
 
-  query<TSchema extends ValidationSchema>(
+  query<TSchema extends QuerySchema>(
     schema: TSchema
   ): RouteContractSpecification<
     TMethod,
@@ -115,7 +122,7 @@ export class RouteContractSpecification<
     return this as any
   }
 
-  headers<TSchema extends ValidationSchema>(
+  headers<TSchema extends HeadersSchema>(
     schema: TSchema
   ): RouteContractSpecification<
     TMethod,
@@ -130,7 +137,7 @@ export class RouteContractSpecification<
     return this as any
   }
 
-  body<TSchema extends ValidationSchema>(
+  body<TSchema extends BodySchema>(
     schema: TSchema
   ): RouteContractSpecification<
     TMethod,
@@ -147,8 +154,8 @@ export class RouteContractSpecification<
 
   response<
     TStatus extends HTTPStatus,
-    TBody extends ValidationSchema = ValidationSchema,
-    THeaders extends ValidationSchema = ValidationSchema
+    TBody extends BodySchema = any,
+    THeaders extends HeadersSchema = any
   >(opts: {
     description?: string
     status: TStatus
@@ -161,7 +168,7 @@ export class RouteContractSpecification<
     TQuerySchema,
     THeadersSchema,
     TBodySchema,
-    IsEqual<TResponses, RouteResponses> extends true
+    IsAny<TResponses> extends true
       ? { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }
       : Merge<TResponses, { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }>
   > {

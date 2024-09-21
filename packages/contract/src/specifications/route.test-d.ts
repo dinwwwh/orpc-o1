@@ -1,6 +1,6 @@
 import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
-import { ValidationSchema } from '../types'
+import { BodySchema, HeadersSchema, ParamsSchema, QuerySchema } from '../types/validation'
 import { RouteContractSpecification, RouteResponses } from './route'
 
 const route = new RouteContractSpecification({ method: 'GET', path: '/foo' })
@@ -8,10 +8,10 @@ type Internal = {
   method: 'GET'
   path: '/foo'
   description?: string
-  ParamsSchema?: ValidationSchema
-  QuerySchema?: ValidationSchema
-  HeadersSchema?: ValidationSchema
-  BodySchema?: ValidationSchema
+  ParamsSchema?: ParamsSchema
+  QuerySchema?: QuerySchema
+  HeadersSchema?: HeadersSchema
+  BodySchema?: BodySchema
   responses: RouteResponses
 }
 
@@ -45,7 +45,7 @@ it('can set responses', () => {
   ).toMatchTypeOf<{
     description: string
     body?: typeof schema
-    headers?: ValidationSchema
+    headers?: HeadersSchema
   }>()
 
   expectTypeOf(
@@ -56,7 +56,7 @@ it('can set responses', () => {
     })['🔒'].responses[500]
   ).toMatchTypeOf<{
     description: string
-    body?: ValidationSchema
+    body?: BodySchema
     headers?: typeof schema
   }>()
 })
@@ -89,11 +89,11 @@ it('can chain responses', () => {
     '200': {
       description: string
       body?: typeof schema1
-      headers?: ValidationSchema
+      headers?: HeadersSchema
     }
     '501': {
       description: string
-      body?: ValidationSchema
+      body?: BodySchema
       headers?: typeof schema2
     }
   }>()

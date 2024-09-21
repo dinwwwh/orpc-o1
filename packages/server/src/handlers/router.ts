@@ -1,5 +1,6 @@
-import { isRouteContractSpecification } from '@orpc/contract'
+import { HTTPMethod, isRouteContractSpecification } from '@orpc/contract'
 import Router from 'trek-router'
+import { Merge } from 'type-fest'
 import { isValiError, parseAsync } from 'valibot'
 import {
   isServerRouteSpecification,
@@ -17,12 +18,15 @@ export interface RouterHandler<
 
 export type RouterHandlerInput<
   TRouter extends ServerRouterSpecification = ServerRouterSpecification
-> = Omit<
-  TRouter extends ServerRouterSpecification<infer Context>
-    ? ServerRouteHandlerInput<Context>
-    : ServerRouteHandlerInput,
-  'params'
-> & { method: string; path: string }
+> = Merge<
+  Omit<
+    TRouter extends ServerRouterSpecification<infer Context>
+      ? ServerRouteHandlerInput<Context>
+      : ServerRouteHandlerInput,
+    'params'
+  >,
+  { method: HTTPMethod; path: string }
+>
 
 export interface RouterHandlerOutput {
   status: number

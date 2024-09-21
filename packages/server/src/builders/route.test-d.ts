@@ -10,9 +10,10 @@ it('infer correct input', () => {
     (input) => {
       expectTypeOf(input.method).toEqualTypeOf<'POST'>()
       expectTypeOf(input.path).toMatchTypeOf<string>()
-      expectTypeOf(input.params).toEqualTypeOf<unknown>()
-      expectTypeOf(input.query).toEqualTypeOf<unknown>()
-      expectTypeOf(input.headers).toEqualTypeOf<unknown>()
+      // TODO: expected undefined schema will be undefined
+      expectTypeOf(input.params).toEqualTypeOf<any>()
+      expectTypeOf(input.query).toEqualTypeOf<any>()
+      expectTypeOf(input.headers).toEqualTypeOf<any>()
       expectTypeOf(input.body).toEqualTypeOf<InferOutput<typeof NewUserSchema>>()
 
       return '' as any

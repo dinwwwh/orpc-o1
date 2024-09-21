@@ -4,13 +4,17 @@ import {
   EnhancedRouterContractSpecification,
   RouterContractSpecification,
 } from '../specifications/router'
-import { HTTPMethod } from '../types'
+import { HTTPMethod, HTTPPath, StandardizeHTTPPath } from '../types/http'
+import { standardizeHTTPPath } from '../utils/http'
 
 export class ContractBuilder {
-  route<TMethod extends HTTPMethod, TPath extends string>(
+  route<TMethod extends HTTPMethod, TPath extends HTTPPath>(
     opts: ConstructorParameters<typeof RouteContractSpecification<TMethod, TPath>>[0]
-  ): RouteContractSpecification<TMethod, TPath> {
-    return new RouteContractSpecification(opts)
+  ): RouteContractSpecification<TMethod, StandardizeHTTPPath<TPath>> {
+    return new RouteContractSpecification({
+      ...opts,
+      path: standardizeHTTPPath(opts.path),
+    }) as any
   }
 
   router<TRouter extends RouterContractSpecification>(

@@ -3,9 +3,8 @@ import {
   OptionalOnUndefined,
   RouteContractSpecification,
   RouteResponse,
-  RouteResponses,
 } from '@orpc/contract'
-import { IsEqual, Promisable } from 'type-fest'
+import { IsAny, Promisable } from 'type-fest'
 import { InferInput, InferOutput } from 'valibot'
 import { ServerContext } from '../types'
 
@@ -68,7 +67,7 @@ export type ServerRouteHandlerOutput<
   infer _TBodySchema,
   infer TResponses
 >
-  ? IsEqual<TResponses, RouteResponses> extends true
+  ? IsAny<TResponses> extends true
     ? void
     : {
         [K in keyof TResponses]: TResponses[K] extends RouteResponse<

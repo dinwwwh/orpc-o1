@@ -4,9 +4,8 @@ import {
   RouteContractSpecification,
   RouterContractSpecification,
   RouteResponse,
-  RouteResponses,
 } from '@orpc/contract'
-import { IsEqual } from 'type-fest'
+import { IsAny } from 'type-fest'
 import type { InferInput } from 'valibot'
 
 export function createORPCClient<TContract extends RouterContractSpecification>(opts: {
@@ -136,7 +135,7 @@ export type ORPCRouteClientOutput<
   infer _TBodySchema,
   infer TResponses
 >
-  ? IsEqual<TResponses, RouteResponses> extends false
+  ? IsAny<TResponses> extends false
     ? {
         [K in keyof TResponses]: TResponses[K] extends RouteResponse<
           infer TStatus,

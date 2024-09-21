@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { mergeHTTPPaths } from './http-path'
+import { mergeHTTPPaths } from './http'
 
 it('works', () => {
   expect(mergeHTTPPaths('/foo', '/bar')).toBe('/foo/bar')
