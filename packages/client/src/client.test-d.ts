@@ -58,7 +58,7 @@ const client = createORPCClient({
 
 it('works', () => {
   expectTypeOf(client.ping.get).toEqualTypeOf<
-    (input: { params?: unknown; query?: unknown; headers?: unknown; body?: unknown }) => Promise<{
+    (input: { params?: any; query?: any; headers?: any; body?: any }) => Promise<{
       status: 204
       body: undefined
       headers: Record<string, never>
@@ -66,26 +66,21 @@ it('works', () => {
   >()
 
   expectTypeOf(client.user.find.get).toEqualTypeOf<
-    (input: {
-      params: { id: string }
-      query?: unknown
-      headers?: unknown
-      body?: unknown
-    }) => Promise<{
+    (input: { params: { id: string }; query?: any; headers?: any; body?: any }) => Promise<{
       status: 200
       body: {
         id: string
         name: string
       }
-      headers: unknown
+      headers: any
     }>
   >()
 
   expectTypeOf(client.user.create.post).toEqualTypeOf<
     (input: {
-      params?: unknown
-      query?: unknown
-      headers?: unknown
+      params?: any
+      query?: any
+      headers?: any
       body: {
         name: string
       }
@@ -96,14 +91,14 @@ it('works', () => {
             id: string
             name: string
           }
-          headers: unknown
+          headers: any
         }
       | {
           status: 400
           body: {
             message: string
           }
-          headers: unknown
+          headers: any
         }
     >
   >()

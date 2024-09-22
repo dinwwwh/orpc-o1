@@ -3,12 +3,12 @@ import {
   RouteContractSpecification,
   RouterContractSpecification,
 } from '@orpc/contract'
-import { ServerContext } from '../types'
+import { Context } from '../types'
 import { ServerRouteSpecification } from './route'
 
 export type ServerRouterSpecification<
-  TContext extends ServerContext = ServerContext,
-  TContract extends RouterContractSpecification = RouterContractSpecification
+  TContext extends Context = any,
+  TContract extends RouterContractSpecification = any
 > = TContract extends EnhancedRouterContractSpecification<infer TContract2>
   ? {
       [K in keyof TContract2]: TContract2[K] extends RouteContractSpecification

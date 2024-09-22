@@ -40,8 +40,8 @@ it('can handle not found', { repeats: 5 }, async () => {
     method: 'GET',
     context,
     body: undefined,
-    headers: undefined,
-    query: undefined,
+    headers: {},
+    query: {},
   })
 
   expect(result).toMatchObject({
@@ -60,8 +60,8 @@ it('can find a user', { repeats: 5 }, async () => {
     method: 'GET',
     context: context,
     body: undefined,
-    headers: undefined,
-    query: undefined,
+    headers: {},
+    query: {},
   })
 
   expect(result).toMatchObject({
@@ -82,8 +82,8 @@ it('can create a user', { repeats: 5 }, async () => {
     body: {
       name: name,
     },
-    headers: undefined,
-    query: undefined,
+    headers: {},
+    query: {},
   })
 
   expect(result).toMatchObject({

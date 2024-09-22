@@ -10,15 +10,11 @@ import {
 import { ServerRouterSpecification } from '../specifications/router'
 import { convertOpenapiPathToTrekRouterPath } from '../utils'
 
-export interface RouterHandler<
-  TRouter extends ServerRouterSpecification = ServerRouterSpecification
-> {
+export interface RouterHandler<TRouter extends ServerRouterSpecification = any> {
   (input: RouterHandlerInput<TRouter>): Promise<RouterHandlerOutput>
 }
 
-export type RouterHandlerInput<
-  TRouter extends ServerRouterSpecification = ServerRouterSpecification
-> = Merge<
+export type RouterHandlerInput<TRouter extends ServerRouterSpecification = any> = Merge<
   Omit<
     TRouter extends ServerRouterSpecification<infer Context>
       ? ServerRouteHandlerInput<Context>

@@ -5,12 +5,12 @@ import {
   ServerRouteHandlerOutput,
   ServerRouteSpecification,
 } from '../specifications/route'
-import { ServerContext } from '../types'
+import { Context } from '../types'
 
 export class ServerRouteBuilder<
-  TContext extends ServerContext = ServerContext,
-  TContract extends RouteContractSpecification = RouteContractSpecification,
-  TCurrentContext extends ServerContext = TContext
+  TContext extends Context = any,
+  TContract extends RouteContractSpecification = any,
+  TCurrentContext extends Context = any
 > {
   public ['🔓']: {
     contract: TContract
@@ -51,8 +51,11 @@ export class ServerRouteBuilder<
 
           if (typeof output !== 'object' || output === null) continue
 
-          if ('context' in output) {
-            context = output.context
+          if ('context' in output && typeof input.context === 'object' && input.context !== null) {
+            context = {
+              ...context,
+              ...output.context,
+            }
           }
 
           if ('response' in output) {

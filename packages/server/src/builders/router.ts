@@ -1,10 +1,10 @@
 import { RouterContractSpecification } from '@orpc/contract'
 import { ServerRouterSpecification } from '../specifications/router'
-import { ServerContext } from '../types'
+import { Context } from '../types'
 
 export class ServerRouterBuilder<
-  TContext extends ServerContext = ServerContext,
-  TContract extends RouterContractSpecification = RouterContractSpecification
+  TContext extends Context = any,
+  TContract extends RouterContractSpecification = any
 > {
   public ['🔓']: {
     contract: TContract

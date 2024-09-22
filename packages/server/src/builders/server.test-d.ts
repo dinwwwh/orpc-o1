@@ -6,11 +6,10 @@ import { findUserContract, findUserRouterContract } from '../__tests__/contract'
 import { ServerBuilder } from './server'
 
 it('works with context', () => {
-  const server1 = new ServerBuilder()
-  expectTypeOf<typeof server1 extends ServerBuilder<infer T> ? T : never>().toEqualTypeOf<any>()
-
-  const server2 = new ServerBuilder<unknown>()
-  expectTypeOf<typeof server2 extends ServerBuilder<infer T> ? T : never>().toEqualTypeOf<unknown>()
+  const server2 = new ServerBuilder<Record<string, never>>()
+  expectTypeOf<typeof server2 extends ServerBuilder<infer T> ? T : never>().toEqualTypeOf<
+    Record<string, never>
+  >()
 
   const server3 = new ServerBuilder<{ userId: string }>()
   expectTypeOf<typeof server3 extends ServerBuilder<infer T> ? T : never>().toEqualTypeOf<{

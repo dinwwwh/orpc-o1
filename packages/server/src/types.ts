@@ -1,1 +1,1 @@
-export type ServerContext = any
+export type Context = Record<string, unknown>

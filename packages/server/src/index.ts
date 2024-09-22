@@ -2,7 +2,7 @@
 
 import { ServerBuilder } from './builders/server'
 
-export const initORPCServer = new ServerBuilder<unknown>()
+export const initORPCServer = new ServerBuilder<Record<string, never>>()
 
 export * from './builders/route'
 export * from './builders/router'

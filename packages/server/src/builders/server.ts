@@ -1,11 +1,11 @@
 import type { RouterContractSpecification } from '@orpc/contract'
 import { isRouteContractSpecification, RouteContractSpecification } from '@orpc/contract'
-import { ServerContext } from '../types'
+import { Context } from '../types'
 import { ServerRouteBuilder } from './route'
 import { ServerRouterBuilder } from './router'
 
-export class ServerBuilder<TContext extends ServerContext = ServerContext> {
-  context<TContext extends ServerContext>(): ServerBuilder<TContext> {
+export class ServerBuilder<TContext extends Context = any> {
+  context<TContext extends Context>(): ServerBuilder<TContext> {
     return this as any
   }
 
@@ -17,18 +17,18 @@ export class ServerBuilder<TContext extends ServerContext = ServerContext> {
 }
 
 export type ChainableContractImplementer<
-  TContext extends ServerContext = ServerContext,
+  TContext extends Context = Context,
   TContract extends RouteContractSpecification | RouterContractSpecification =
     | RouteContractSpecification
     | RouterContractSpecification
 > = TContract extends RouteContractSpecification
-  ? ServerRouteBuilder<TContext, TContract>
+  ? ServerRouteBuilder<TContext, TContract, TContext>
   : {
       [K in keyof TContract]: ChainableContractImplementer<TContext, TContract[K]>
     } & ServerRouterBuilder<TContext, TContract>
 
 export function createChainableContractImplementer<
-  TContext extends ServerContext = ServerContext,
+  TContext extends Context = Context,
   TContract extends RouteContractSpecification | RouterContractSpecification =
     | RouteContractSpecification
     | RouterContractSpecification

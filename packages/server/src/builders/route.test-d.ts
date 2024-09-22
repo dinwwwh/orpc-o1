@@ -1,6 +1,7 @@
 import { initORPCContract } from '@orpc/contract'
 import { InferOutput, number, object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
+import { initORPCServer } from '..'
 import { createUserContract } from '../__tests__/contract'
 import { NewUserSchema } from '../__tests__/schemas'
 import { ServerRouteBuilder } from './route'
@@ -139,7 +140,9 @@ it('does not allow handler return if not specified', () => {
 it('middleware can modify context', () => {
   const routeContract = initORPCContract.route({ method: 'GET', path: '/' })
 
-  new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
+  initORPCServer
+    .context<{ userId: string }>()
+    .contract(routeContract)
     .middleware(({ context }) => {
       expectTypeOf(context).toEqualTypeOf<{ userId: string }>()
 
