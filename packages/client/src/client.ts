@@ -22,63 +22,59 @@ export function createORPCClient<TContract extends RouterContractSpecification>(
 
         if (isRouteContractSpecification(contract)) {
           const internal = contract['🔒'] as RouteContractSpecification['🔒']
-          return {
-            async [internal.method.toLocaleLowerCase()](
-              input: ORPCRouteClientInput
-            ): Promise<ORPCRouteClientOutput> {
-              let contractPath = internal.path.startsWith('/') ? '.' + internal.path : internal.path
+          return async (input: ORPCRouteClientInput): Promise<ORPCRouteClientOutput> => {
+            let contractPath = internal.path.startsWith('/') ? '.' + internal.path : internal.path
 
-              if (input.params && typeof input.params === 'object' && input.params !== null) {
-                for (const key in input.params) {
-                  const item = (input.params as Record<string, any>)[key]
+            if (input.params && typeof input.params === 'object' && input.params !== null) {
+              for (const key in input.params) {
+                const item = (input.params as Record<string, any>)[key]
 
-                  if (
-                    typeof item !== 'string' &&
-                    typeof item !== 'number' &&
-                    typeof item !== 'boolean'
-                  ) {
-                    throw new Error('param items must be string or number')
-                  }
-
-                  contractPath = contractPath.replace(`{${key}}`, encodeURIComponent(item))
+                if (
+                  typeof item !== 'string' &&
+                  typeof item !== 'number' &&
+                  typeof item !== 'boolean'
+                ) {
+                  throw new Error('param items must be string or number')
                 }
+
+                contractPath = contractPath.replace(`{${key}}`, encodeURIComponent(item))
               }
+            }
 
-              const url = new URL(
-                contractPath,
-                opts.baseURL.endsWith('/') ? opts.baseURL : opts.baseURL + '/'
-              )
+            const url = new URL(
+              contractPath,
+              opts.baseURL.endsWith('/') ? opts.baseURL : opts.baseURL + '/'
+            )
 
-              if (input.query && typeof input.query === 'object' && input.query !== null) {
-                for (const key in input.query) {
-                  const item = (input.query as Record<string, any>)[key]
+            if (input.query && typeof input.query === 'object' && input.query !== null) {
+              for (const key in input.query) {
+                const item = (input.query as Record<string, any>)[key]
 
-                  if (typeof item !== 'string') {
-                    throw new Error('query items must be string or number')
-                  }
-
-                  url.searchParams.append(key, item)
+                if (typeof item !== 'string') {
+                  throw new Error('query items must be string or number')
                 }
+
+                url.searchParams.append(key, item)
               }
+            }
 
-              const response = await (opts.fetch ?? fetch)(url, {
-                method: internal.method,
-                headers: {
-                  ...(input.headers as any),
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(input.body),
-              })
+            const response = await (opts.fetch ?? fetch)(url, {
+              method: internal.method,
+              headers: {
+                ...(input.headers as any),
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(input.body),
+            })
 
-              const text = await response.text()
-              const json = text ? JSON.parse(text) : undefined
+            const text = await response.text()
+            const json = text ? JSON.parse(text) : undefined
 
-              return {
-                status: response.status,
-                body: json,
-                headers: Object.fromEntries(response.headers.entries()),
-              } as any
-            },
+            return {
+              status: response.status,
+              body: json,
+              headers: Object.fromEntries(response.headers.entries()),
+            } as any
           }
         }
 
@@ -101,9 +97,7 @@ export type ORPCClient<
 export type ORPCRouteClient<
   TContract extends RouteContractSpecification = RouteContractSpecification
 > = {
-  [K in Lowercase<TContract['🔒']['method']>]: (
-    input: ORPCRouteClientInput<TContract>
-  ) => Promise<ORPCRouteClientOutput<TContract>>
+  (input: ORPCRouteClientInput<TContract>): Promise<ORPCRouteClientOutput<TContract>>
 }
 
 export type ORPCRouteClientInput<

@@ -92,7 +92,7 @@ const client = createORPCClient({
   baseURL: 'http://localhost:3000/api',
   fetch: (...args) => {
     return fetchRequestHandler({
-      context: undefined,
+      context: {},
       request: new Request(...args),
       handler: routerHandler,
       prefix: '/api',
@@ -101,7 +101,7 @@ const client = createORPCClient({
 })
 
 it('works', async () => {
-  expect(await client.prefix.get({})).toMatchObject({
+  expect(await client.prefix({})).toMatchObject({
     status: 204,
     body: undefined,
     headers: {},
@@ -109,7 +109,7 @@ it('works', async () => {
 
   const id = crypto.randomUUID()
 
-  expect(await client.user.find.get({ params: { id } })).toMatchObject({
+  expect(await client.user.find({ params: { id } })).toMatchObject({
     status: 200,
     body: {
       id,
@@ -118,7 +118,7 @@ it('works', async () => {
     headers: {},
   })
 
-  expect(await client.user.create.post({ body: { name: id } })).toMatchObject({
+  expect(await client.user.create({ body: { name: id } })).toMatchObject({
     status: 201,
     body: {
       id: 'create:id',
@@ -127,7 +127,7 @@ it('works', async () => {
     headers: {},
   })
 
-  expect(await client.user.create.post({ body: { name: 'error' } })).toMatchObject({
+  expect(await client.user.create({ body: { name: 'error' } })).toMatchObject({
     status: 400,
     body: {
       message: 'error',
