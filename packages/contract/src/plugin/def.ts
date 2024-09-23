@@ -9,8 +9,11 @@ export class Plugin<TResponses extends RouteResponses = any> {
     responses: TResponses
   }
 
-  constructor(opts: { name: string; responses: TResponses }) {
-    this['🔒'] = opts
+  constructor(opts: { name: string }) {
+    this['🔒'] = {
+      responses: {} as any,
+      ...opts,
+    }
   }
 
   response<

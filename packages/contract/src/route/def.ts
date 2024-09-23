@@ -1,4 +1,4 @@
-import { IsAny, Merge } from 'type-fest'
+import { Plugin } from '../plugin'
 import {
   HTTPMethod,
   HTTPPath,
@@ -8,7 +8,7 @@ import {
 } from '../types/http'
 import { BodySchema, HeadersSchema, ParamsSchema, QuerySchema } from '../types/validation'
 import { mergeHTTPPaths } from '../utils/http'
-import { RouteResponse, RouteResponses } from './types'
+import { MergeRouteResponses, RouteResponse, RouteResponses } from './types'
 
 export class Route<
   TMethod extends HTTPMethod = any,
@@ -131,11 +131,29 @@ export class Route<
     TQuerySchema,
     THeadersSchema,
     TBodySchema,
-    IsAny<TResponses> extends true
-      ? { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }
-      : Merge<TResponses, { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }>
+    MergeRouteResponses<TResponses, { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }>
   > {
     this['🔒'].responses[response.status] = response
+
+    return this as any
+  }
+
+  use<T extends Plugin>(
+    plugin: T
+  ): Route<
+    TMethod,
+    TPath,
+    TParamsSchema,
+    TQuerySchema,
+    THeadersSchema,
+    TBodySchema,
+    T extends Plugin<infer T2Responses> ? MergeRouteResponses<TResponses, T2Responses> : never
+  > {
+    const responses = plugin['🔒'].responses
+
+    for (const key in responses) {
+      ;(this['🔒'].responses as any)[key] = responses[key]
+    }
 
     return this as any
   }

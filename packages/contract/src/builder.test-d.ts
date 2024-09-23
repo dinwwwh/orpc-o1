@@ -1,3 +1,4 @@
+import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
 import { Builder } from './builder'
 import { Route } from './route'
@@ -44,5 +45,27 @@ it('can build nested routers', () => {
     foo: {
       bar: Route<'GET', '/bar'>
     }
+  }>()
+})
+
+it('can use plugin', () => {
+  const builder = new Builder()
+
+  const bodySchema = object({
+    message: string(),
+  })
+
+  const authPlugin = builder.plugin({ name: 'auth' }).response({
+    status: 401,
+    body: bodySchema,
+  })
+
+  const builder2 = builder.use(authPlugin)
+
+  const route = builder2.route({ method: 'GET', path: '/foo' })
+
+  expectTypeOf(route['🔒'].responses['401']).toMatchTypeOf<{
+    status: 401
+    body?: typeof bodySchema
   }>()
 })
