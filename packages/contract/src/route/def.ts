@@ -1,4 +1,4 @@
-import { Plugin } from '../plugin'
+import { ContractPlugin } from '../plugin'
 import {
   HTTPMethod,
   HTTPPath,
@@ -10,7 +10,7 @@ import { BodySchema, HeadersSchema, ParamsSchema, QuerySchema } from '../types/v
 import { mergeHTTPPaths } from '../utils/http'
 import { MergeRouteResponses, RouteResponse, RouteResponses } from './types'
 
-export class Route<
+export class ContractRoute<
   TMethod extends HTTPMethod = any,
   TPath extends HTTPPath = any,
   TParamsSchema extends ParamsSchema = any,
@@ -59,7 +59,7 @@ export class Route<
 
   prefix<TPrefix extends HTTPPath>(
     prefix: TPrefix
-  ): Route<
+  ): ContractRoute<
     TMethod,
     MergeHTTPPaths<StandardizeHTTPPath<TPrefix>, TPath>,
     TParamsSchema,
@@ -89,28 +89,44 @@ export class Route<
 
   params<TSchema extends ParamsSchema>(
     schema: TSchema
-  ): Route<TMethod, TPath, TSchema, TQuerySchema, THeadersSchema, TBodySchema, TResponses> {
+  ): ContractRoute<TMethod, TPath, TSchema, TQuerySchema, THeadersSchema, TBodySchema, TResponses> {
     this['🔒'].params.schema = schema as any
     return this as any
   }
 
   query<TSchema extends QuerySchema>(
     schema: TSchema
-  ): Route<TMethod, TPath, TParamsSchema, TSchema, THeadersSchema, TBodySchema, TResponses> {
+  ): ContractRoute<
+    TMethod,
+    TPath,
+    TParamsSchema,
+    TSchema,
+    THeadersSchema,
+    TBodySchema,
+    TResponses
+  > {
     this['🔒'].query.schema = schema as any
     return this as any
   }
 
   headers<TSchema extends HeadersSchema>(
     schema: TSchema
-  ): Route<TMethod, TPath, TParamsSchema, TQuerySchema, TSchema, TBodySchema, TResponses> {
+  ): ContractRoute<TMethod, TPath, TParamsSchema, TQuerySchema, TSchema, TBodySchema, TResponses> {
     this['🔒'].headers.schema = schema as any
     return this as any
   }
 
   body<TSchema extends BodySchema>(
     schema: TSchema
-  ): Route<TMethod, TPath, TParamsSchema, TQuerySchema, THeadersSchema, TSchema, TResponses> {
+  ): ContractRoute<
+    TMethod,
+    TPath,
+    TParamsSchema,
+    TQuerySchema,
+    THeadersSchema,
+    TSchema,
+    TResponses
+  > {
     this['🔒'].body.schema = schema as any
     return this as any
   }
@@ -124,7 +140,7 @@ export class Route<
     status: TStatus
     body?: TBody
     headers?: THeaders
-  }): Route<
+  }): ContractRoute<
     TMethod,
     TPath,
     TParamsSchema,
@@ -138,16 +154,18 @@ export class Route<
     return this as any
   }
 
-  use<T extends Plugin>(
+  use<T extends ContractPlugin>(
     plugin: T
-  ): Route<
+  ): ContractRoute<
     TMethod,
     TPath,
     TParamsSchema,
     TQuerySchema,
     THeadersSchema,
     TBodySchema,
-    T extends Plugin<infer T2Responses> ? MergeRouteResponses<TResponses, T2Responses> : never
+    T extends ContractPlugin<infer T2Responses>
+      ? MergeRouteResponses<TResponses, T2Responses>
+      : never
   > {
     const responses = plugin['🔒'].responses
 

@@ -1,7 +1,7 @@
-import { Route } from './def'
+import { ContractRoute } from './def'
 
-export function isRoute(value: unknown): value is Route {
-  if (value instanceof Route) return true
+export function isContractRoute(value: unknown): value is ContractRoute {
+  if (value instanceof ContractRoute) return true
 
   try {
     const internal = (value as any)?.['🔒']

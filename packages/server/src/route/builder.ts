@@ -1,12 +1,12 @@
-import { Route as ContractRoute } from '@orpc/contract'
+import { ContractRoute } from '@orpc/contract'
 import { ServerMiddlewareOutput, ServerMiddlewareSpecification } from '../plugin/middleware'
-import { Context } from '../types'
-import { Route, RouteHandler, RouteHandlerOutput } from './def'
+import { ServerContext } from '../types'
+import { RouteHandler, RouteHandlerOutput, ServerRoute } from './def'
 
-export class RouteBuilder<
-  TContext extends Context = any,
+export class ServerRouteBuilder<
+  TContext extends ServerContext = any,
   TContract extends ContractRoute = any,
-  TCurrentContext extends Context = any
+  TCurrentContext extends ServerContext = any
 > {
   public ['🔓']: {
     contract: TContract
@@ -22,7 +22,7 @@ export class RouteBuilder<
 
   middleware<TMiddleware extends ServerMiddlewareSpecification<TCurrentContext, TContract>>(
     middleware: TMiddleware
-  ): RouteBuilder<
+  ): ServerRouteBuilder<
     TContext,
     TContract,
     Awaited<ReturnType<TMiddleware>> extends ServerMiddlewareOutput<infer TCurrentContext>
@@ -34,8 +34,8 @@ export class RouteBuilder<
     return this as any
   }
 
-  handler(handler: RouteHandler<TCurrentContext, TContract>): Route<TContext, TContract> {
-    return new Route<TContext, TContract>({
+  handler(handler: RouteHandler<TCurrentContext, TContract>): ServerRoute<TContext, TContract> {
+    return new ServerRoute<TContext, TContract>({
       contract: this.routeContract,
       handler: async (input, ...others) => {
         let context: TContext = input.context

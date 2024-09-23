@@ -4,10 +4,10 @@ import { expectTypeOf, it } from 'vitest'
 import { initORPCServer } from '..'
 import { createUserContract } from '../__tests__/contract'
 import { NewUserSchema } from '../__tests__/schemas'
-import { RouteBuilder } from './builder'
+import { ServerRouteBuilder } from './builder'
 
 it('infer correct input', () => {
-  new RouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
+  new ServerRouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
     (input) => {
       expectTypeOf(input.method).toEqualTypeOf<'POST'>()
       expectTypeOf(input.path).toMatchTypeOf<string>()
@@ -47,7 +47,7 @@ it('infer correct input', () => {
       })
     )
 
-  new RouteBuilder<{ userId: string }, typeof fullContract>(fullContract).handler((input) => {
+  new ServerRouteBuilder<{ userId: string }, typeof fullContract>(fullContract).handler((input) => {
     expectTypeOf(input.method).toEqualTypeOf<'DELETE'>()
     expectTypeOf(input.path).toMatchTypeOf<string>()
     expectTypeOf(input.params).toEqualTypeOf<{ paramId: string }>()
@@ -60,7 +60,7 @@ it('infer correct input', () => {
 })
 
 it('infer correct output', () => {
-  new RouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
+  new ServerRouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
     async () => {
       return {
         status: 201,
@@ -72,7 +72,7 @@ it('infer correct output', () => {
     }
   )
 
-  new RouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
+  new ServerRouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
     // @ts-expect-error name must be string
     async () => {
       return {
@@ -85,7 +85,7 @@ it('infer correct output', () => {
     }
   )
 
-  new RouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
+  new ServerRouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
     async () => {
       return {
         status: 400,
@@ -96,7 +96,7 @@ it('infer correct output', () => {
     }
   )
 
-  new RouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
+  new ServerRouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
     // @ts-expect-error body mismatch
     async () => {
       return {
@@ -109,7 +109,7 @@ it('infer correct output', () => {
     }
   )
 
-  new RouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
+  new ServerRouteBuilder<{ userId: string }, typeof createUserContract>(createUserContract).handler(
     // @ts-expect-error status mismatch
     async () => {
       return {
@@ -126,10 +126,12 @@ it('infer correct output', () => {
 it('does not allow handler return if not specified', () => {
   const routeContract = initORPCContract.route({ method: 'GET', path: '/' })
 
-  new RouteBuilder<{ userId: string }, typeof routeContract>(routeContract).handler(() => {})
-  new RouteBuilder<{ userId: string }, typeof routeContract>(routeContract).handler(async () => {})
+  new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract).handler(() => {})
+  new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract).handler(
+    async () => {}
+  )
 
-  new RouteBuilder<{ userId: string }, typeof routeContract>(routeContract).handler(
+  new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract).handler(
     // @ts-expect-error handler must not return
     () => ({})
   )
@@ -172,7 +174,7 @@ it('middleware can response right away', () => {
     }),
   })
 
-  new RouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
+  new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
     .middleware(() => {
       return {
         response: {

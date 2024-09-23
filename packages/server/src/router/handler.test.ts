@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
 import { initORPCServer } from '..'
 import { userRouterContract } from '../__tests__/contract'
-import { createRouterHandler } from './handler'
+import { createServerRouterHandler } from './handler'
 
 const orpc = initORPCServer.context<{ auth?: { id: string } }>()
 
@@ -32,7 +32,7 @@ const appRouter = orpc.contract(userRouterContract).router({
   }),
 })
 
-const routeHandler = createRouterHandler(appRouter)
+const routeHandler = createServerRouterHandler(appRouter)
 
 it('can handle not found', { repeats: 5 }, async () => {
   const result = await routeHandler({

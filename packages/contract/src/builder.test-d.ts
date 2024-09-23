@@ -1,17 +1,17 @@
 import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
-import { Builder } from './builder'
-import { Route } from './route'
+import { ContractBuilder } from './builder'
+import { ContractRoute } from './route'
 
-const builder = new Builder()
+const builder = new ContractBuilder()
 
 it('can build a route', () => {
   const route = builder.route({ method: 'GET', path: '/foo' })
 
-  expectTypeOf(route).toMatchTypeOf<Route<'GET', '/foo'>>()
+  expectTypeOf(route).toMatchTypeOf<ContractRoute<'GET', '/foo'>>()
 
-  expectTypeOf(route).not.toMatchTypeOf({} as Route<'GET', '/fo'>)
-  expectTypeOf(route).not.toMatchTypeOf({} as Route<'DELETE', '/foo'>)
+  expectTypeOf(route).not.toMatchTypeOf({} as ContractRoute<'GET', '/fo'>)
+  expectTypeOf(route).not.toMatchTypeOf({} as ContractRoute<'DELETE', '/foo'>)
 })
 
 it('can build a router', () => {
@@ -21,13 +21,13 @@ it('can build a router', () => {
   })
 
   expectTypeOf(router).toMatchTypeOf<{
-    foo: Route<'GET', '/foo'>
-    bar: Route<'POST', '/bar'>
+    foo: ContractRoute<'GET', '/foo'>
+    bar: ContractRoute<'POST', '/bar'>
   }>()
 
   expectTypeOf(router).not.toMatchTypeOf<{
-    foo: Route<'GET', '/foo'>
-    bar: Route<'GET', '/bar'>
+    foo: ContractRoute<'GET', '/foo'>
+    bar: ContractRoute<'GET', '/bar'>
   }>()
 })
 
@@ -41,15 +41,15 @@ it('can build nested routers', () => {
   })
 
   expectTypeOf(router).toMatchTypeOf<{
-    hu: Route<'GET', '/foo'>
+    hu: ContractRoute<'GET', '/foo'>
     foo: {
-      bar: Route<'GET', '/bar'>
+      bar: ContractRoute<'GET', '/bar'>
     }
   }>()
 })
 
 it('can use plugin', () => {
-  const builder = new Builder()
+  const builder = new ContractBuilder()
 
   const bodySchema = object({
     message: string(),

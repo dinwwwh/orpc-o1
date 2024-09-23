@@ -1,8 +1,8 @@
 /** dinwwwh */
 
-import { Builder } from './builder'
+import { ContractBuilder } from './builder'
 
-export const initORPCContract = new Builder()
+export const initORPCContract = new ContractBuilder()
 
 export * from './builder'
 export * from './plugin'

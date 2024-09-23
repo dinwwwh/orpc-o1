@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
 import { initORPCServer } from '..'
 import { userRouterContract } from '../__tests__/contract'
-import { createRouterHandler } from '../router'
+import { createServerRouterHandler } from '../router'
 import { fetchRequestHandler } from './fetch'
 
 const orpc = initORPCServer.context<{ auth?: { id: string } }>()
@@ -33,7 +33,7 @@ const appRouter = orpc.contract(userRouterContract).router({
   }),
 })
 
-const routeHandler = createRouterHandler(appRouter)
+const routeHandler = createServerRouterHandler(appRouter)
 
 const prefixes = ['/api/', '/api', '/', undefined, '/hehe//', '//huhu', '/hu/hu//']
 

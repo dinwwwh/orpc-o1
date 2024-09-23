@@ -1,3 +1,3 @@
-import { Route } from '../route/def'
+import { ContractRoute } from '../route/def'
 
-export type Router<T extends Record<string, Route | Router> = any> = T
+export type ContractRouter<T extends Record<string, ContractRoute | ContractRouter> = any> = T

@@ -1,4 +1,4 @@
-import { BaseSchema, isRoute, Router, RouteResponse } from '@orpc/contract'
+import { BaseSchema, ContractRouter, isContractRoute, RouteResponse } from '@orpc/contract'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import {
   ContentObject,
@@ -22,7 +22,7 @@ const JsonSchemaSupportOnParametersSchema = object({
 })
 
 export function generateOpenApiSpec(
-  router: Router,
+  router: ContractRouter,
   spec: Omit<OpenAPIObject, 'openapi'>
 ): OpenAPIObject {
   const builder = OpenApiBuilder.create({
@@ -33,11 +33,11 @@ export function generateOpenApiSpec(
   // TODO: tags
   // TODO: schema references
 
-  const addPathsToBuilderRecursively = (router: Router) => {
+  const addPathsToBuilderRecursively = (router: ContractRouter) => {
     for (const key in router) {
       const item = router[key]
 
-      if (isRoute(item)) {
+      if (isContractRoute(item)) {
         const internal = item['🔒']
 
         const requestBody = (() => {

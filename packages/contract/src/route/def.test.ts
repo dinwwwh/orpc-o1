@@ -1,10 +1,10 @@
 import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
 import { BodySchema, HeadersSchema, ParamsSchema, QuerySchema } from '../types/validation'
-import { Route } from './def'
+import { ContractRoute } from './def'
 import { RouteResponses } from './types'
 
-const route = new Route({ method: 'GET', path: '/foo' })
+const route = new ContractRoute({ method: 'GET', path: '/foo' })
 type Internal = {
   method: 'GET'
   path: '/foo'
@@ -76,7 +76,7 @@ it('can chain responses', () => {
     age: string(),
   })
 
-  const route = new Route({ method: 'GET', path: '/foo' })
+  const route = new ContractRoute({ method: 'GET', path: '/foo' })
     .response({
       status: 200,
       description: 'foo',
@@ -103,18 +103,18 @@ it('can chain responses', () => {
 })
 
 it('can prefix path', () => {
-  const route = new Route({ method: 'GET', path: '/foo' }).prefix('/bar')
+  const route = new ContractRoute({ method: 'GET', path: '/foo' }).prefix('/bar')
   expectTypeOf(route['🔒'].path).toMatchTypeOf<'/bar/foo'>()
 
-  const route2 = new Route({ method: 'GET', path: '/foo' }).prefix('/bar/')
+  const route2 = new ContractRoute({ method: 'GET', path: '/foo' }).prefix('/bar/')
   expectTypeOf(route2['🔒'].path).toMatchTypeOf<'/bar/foo'>()
 
-  const route3 = new Route({ method: 'GET', path: '/foo' }).prefix('/')
+  const route3 = new ContractRoute({ method: 'GET', path: '/foo' }).prefix('/')
   expectTypeOf(route3['🔒'].path).toMatchTypeOf<'/foo'>()
 
-  const route4 = new Route({ method: 'GET', path: '/foo/' }).prefix('/')
+  const route4 = new ContractRoute({ method: 'GET', path: '/foo/' }).prefix('/')
   expectTypeOf(route4['🔒'].path).toMatchTypeOf<'/foo/'>()
 
-  const route5 = new Route({ method: 'GET', path: '/foo/' }).prefix('/api/')
+  const route5 = new ContractRoute({ method: 'GET', path: '/foo/' }).prefix('/api/')
   expectTypeOf(route5['🔒'].path).toMatchTypeOf<'/api/foo'>()
 })

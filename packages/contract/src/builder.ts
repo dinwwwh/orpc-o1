@@ -1,18 +1,18 @@
-import { Plugin } from './plugin'
-import { MergeRouteResponses, Route, RouteResponses } from './route'
-import { createEnhancedRouter, EnhancedRouter, Router } from './router'
+import { ContractPlugin } from './plugin'
+import { ContractRoute, MergeRouteResponses, RouteResponses } from './route'
+import { ContractRouter, createEnhancedContractRouter, EnhancedContractRouter } from './router'
 import { HTTPMethod, HTTPPath, StandardizeHTTPPath } from './types/http'
 import { standardizeHTTPPath } from './utils/http'
 
-export class Builder<TResponses extends RouteResponses = any> {
+export class ContractBuilder<TResponses extends RouteResponses = any> {
   public ['🔒']: {
-    plugins?: Plugin[]
+    plugins?: ContractPlugin[]
   } = {}
 
   route<TMethod extends HTTPMethod, TPath extends HTTPPath>(
-    opts: ConstructorParameters<typeof Route<TMethod, TPath>>[0]
-  ): Route<TMethod, StandardizeHTTPPath<TPath>, any, any, any, any, TResponses> {
-    const route = new Route({
+    opts: ConstructorParameters<typeof ContractRoute<TMethod, TPath>>[0]
+  ): ContractRoute<TMethod, StandardizeHTTPPath<TPath>, any, any, any, any, TResponses> {
+    const route = new ContractRoute({
       ...opts,
       path: standardizeHTTPPath(opts.path),
     })
@@ -26,20 +26,22 @@ export class Builder<TResponses extends RouteResponses = any> {
     return route as any
   }
 
-  router<TRouter extends Router>(router: TRouter): EnhancedRouter<TRouter> {
-    return createEnhancedRouter(router)
+  router<TRouter extends ContractRouter>(router: TRouter): EnhancedContractRouter<TRouter> {
+    return createEnhancedContractRouter(router)
   }
 
-  plugin(opts: { name: string }): Plugin {
-    return new Plugin(opts)
+  plugin(opts: { name: string }): ContractPlugin {
+    return new ContractPlugin(opts)
   }
 
-  use<T extends Plugin>(
+  use<T extends ContractPlugin>(
     plugin: T
-  ): Builder<
-    T extends Plugin<infer T2Responses> ? MergeRouteResponses<TResponses, T2Responses> : never
+  ): ContractBuilder<
+    T extends ContractPlugin<infer T2Responses>
+      ? MergeRouteResponses<TResponses, T2Responses>
+      : never
   > {
-    const builder = new Builder()
+    const builder = new ContractBuilder()
 
     builder['🔒'].plugins ??= []
 

@@ -1,18 +1,18 @@
 import { UnknownRecord } from 'type-fest'
-import { isRoute } from '../route'
+import { isContractRoute } from '../route'
 import { HTTPPath } from '../types/http'
-import { Router } from './def'
-import { MergeRouterHTTPPaths } from './types'
+import { ContractRouter } from './def'
+import { PrefixContractRouterHTTPPaths } from './types'
 
-export type EnhancedRouter<TRouter extends Router> = TRouter & {
+export type EnhancedContractRouter<TRouter extends ContractRouter> = TRouter & {
   prefix<TPrefix extends HTTPPath>(
     prefix: TPrefix
-  ): EnhancedRouter<MergeRouterHTTPPaths<TRouter, TPrefix>>
+  ): EnhancedContractRouter<PrefixContractRouterHTTPPaths<TRouter, TPrefix>>
 }
 
-export function createEnhancedRouter<TRouter extends Router>(
+export function createEnhancedContractRouter<TRouter extends ContractRouter>(
   router: TRouter
-): EnhancedRouter<TRouter> {
+): EnhancedContractRouter<TRouter> {
   const enhancedRouter = new Proxy(router as UnknownRecord, {
     get(rootTarget, prop) {
       if (prop === 'prefix') {
@@ -20,11 +20,11 @@ export function createEnhancedRouter<TRouter extends Router>(
           Object.assign(() => {}, Reflect.get(rootTarget, prop) ?? {}),
           {
             apply(_target, _thisArg, argArray) {
-              const applyPrefix = (router: Router) => {
+              const applyPrefix = (router: ContractRouter) => {
                 for (const key in router) {
                   const item = router[key]
 
-                  if (isRoute(item)) {
+                  if (isContractRoute(item)) {
                     item.prefix(argArray[0])
                   } else {
                     applyPrefix(item)

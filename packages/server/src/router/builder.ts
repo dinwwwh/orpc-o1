@@ -1,8 +1,11 @@
-import { Router as ContractRouter } from '@orpc/contract'
-import { Context } from '../types'
-import { Router } from './def'
+import { ContractRouter } from '@orpc/contract'
+import { ServerContext } from '../types'
+import { ServerRouter } from './def'
 
-export class RouterBuilder<TContext extends Context = any, TContract extends ContractRouter = any> {
+export class ServerRouterBuilder<
+  TContext extends ServerContext = any,
+  TContract extends ContractRouter = any
+> {
   public ['🔓']: {
     contract: TContract
   }
@@ -13,7 +16,7 @@ export class RouterBuilder<TContext extends Context = any, TContract extends Con
     }
   }
 
-  router(router: Router<TContext, TContract>): Router<TContext, TContract> {
+  router(router: ServerRouter<TContext, TContract>): ServerRouter<TContext, TContract> {
     return router
   }
 }

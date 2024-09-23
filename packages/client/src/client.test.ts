@@ -1,5 +1,5 @@
 import { initORPCContract } from '@orpc/contract'
-import { createRouterHandler, initORPCServer } from '@orpc/server'
+import { createServerRouterHandler, initORPCServer } from '@orpc/server'
 import { fetchRequestHandler } from '@orpc/server/fetch'
 import { object, string } from 'valibot'
 import { expect, it } from 'vitest'
@@ -84,7 +84,7 @@ const server = initORPCServer.contract(contract).router({
   },
 })
 
-const routerHandler = createRouterHandler(server)
+const routerHandler = createServerRouterHandler(server)
 
 const client = createORPCClient({
   contract,

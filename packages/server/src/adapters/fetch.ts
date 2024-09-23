@@ -1,12 +1,12 @@
 import { HTTPMethod } from '@orpc/contract'
-import { RouterHandler } from '../router'
-import { Router } from '../router/def'
+import { ServerRouterHandler } from '../router'
+import { ServerRouter } from '../router/def'
 
-export async function fetchRequestHandler<THandler extends RouterHandler>(opts: {
+export async function fetchRequestHandler<THandler extends ServerRouterHandler>(opts: {
   request: Request
   handler: THandler
-  context: THandler extends RouterHandler<infer TRouter>
-    ? TRouter extends Router<infer TContext>
+  context: THandler extends ServerRouterHandler<infer TRouter>
+    ? TRouter extends ServerRouter<infer TContext>
       ? TContext
       : never
     : never

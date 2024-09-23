@@ -1,15 +1,15 @@
-import type { Router } from '@orpc/contract'
-import { isRoute, Route } from '@orpc/contract'
-import { RouteBuilder } from './route'
-import { RouterBuilder } from './router'
-import { Context } from './types'
+import type { ContractRouter } from '@orpc/contract'
+import { ContractRoute, isContractRoute } from '@orpc/contract'
+import { ServerRouteBuilder } from './route'
+import { ServerRouterBuilder } from './router'
+import { ServerContext } from './types'
 
-export class Builder<TContext extends Context = any> {
-  context<TContext extends Context>(): Builder<TContext> {
+export class ServerBuilder<TContext extends ServerContext = any> {
+  context<TContext extends ServerContext>(): ServerBuilder<TContext> {
     return this as any
   }
 
-  contract<TContract extends Route | Router>(
+  contract<TContract extends ContractRoute | ContractRouter>(
     contract: TContract
   ): ChainableContractImplementer<TContext, TContract> {
     return createChainableContractImplementer<TContext, TContract>(contract)
@@ -17,25 +17,28 @@ export class Builder<TContext extends Context = any> {
 }
 
 export type ChainableContractImplementer<
-  TContext extends Context = Context,
-  TContract extends Route | Router = Route | Router
-> = TContract extends Route
-  ? RouteBuilder<TContext, TContract, TContext>
+  TContext extends ServerContext = ServerContext,
+  TContract extends ContractRoute | ContractRouter = ContractRoute | ContractRouter
+> = TContract extends ContractRoute
+  ? ServerRouteBuilder<TContext, TContract, TContext>
   : {
       [K in keyof TContract]: ChainableContractImplementer<TContext, TContract[K]>
-    } & RouterBuilder<TContext, TContract>
+    } & ServerRouterBuilder<TContext, TContract>
 
 export function createChainableContractImplementer<
-  TContext extends Context = Context,
-  TContract extends Route | Router = Route | Router
+  TContext extends ServerContext = ServerContext,
+  TContract extends ContractRoute | ContractRouter = ContractRoute | ContractRouter
 >(contract: TContract): ChainableContractImplementer<TContext, TContract> {
-  if (isRoute(contract)) {
-    return new RouteBuilder(contract) as any
+  if (isContractRoute(contract)) {
+    return new ServerRouteBuilder(contract) as any
   }
 
-  return new Proxy(new RouterBuilder(contract), {
+  return new Proxy(new ServerRouterBuilder(contract), {
     get(target, key) {
-      const contract = (target['🔓'].contract as Router)[key] as Route | Router | undefined
+      const contract = (target['🔓'].contract as ContractRouter)[key] as
+        | ContractRoute
+        | ContractRouter
+        | undefined
 
       if (!contract) {
         return Reflect.get(target, key)

@@ -1,21 +1,27 @@
-import { isRoute, OptionalOnUndefined, Route, Router, RouteResponse } from '@orpc/contract'
+import {
+  ContractRoute,
+  ContractRouter,
+  isContractRoute,
+  OptionalOnUndefined,
+  RouteResponse,
+} from '@orpc/contract'
 import { IsAny } from 'type-fest'
 import type { InferInput } from 'valibot'
 
-export function createORPCClient<TContract extends Router>(opts: {
+export function createORPCClient<TContract extends ContractRouter>(opts: {
   contract: TContract
   baseURL: string
   fetch?: typeof fetch
 }): ORPCClient<TContract> {
-  const createProxy = (contract: Route | TContract) => {
+  const createProxy = (contract: ContractRoute | TContract) => {
     return new Proxy(contract as object, {
       get(target, prop) {
         const contract = Reflect.get(target, prop)
 
         if (contract === undefined) return undefined
 
-        if (isRoute(contract)) {
-          const internal = contract['🔒'] as Route['🔒']
+        if (isContractRoute(contract)) {
+          const internal = contract['🔒'] as ContractRoute['🔒']
           return async (input: ORPCRouteClientInput): Promise<ORPCRouteClientOutput> => {
             let contractPath = internal.path.startsWith('/') ? '.' + internal.path : internal.path
 
@@ -80,58 +86,60 @@ export function createORPCClient<TContract extends Router>(opts: {
   return createProxy(opts.contract)
 }
 
-export type ORPCClient<TContract extends Router = Router> = {
-  [K in keyof TContract]: TContract[K] extends Route
+export type ORPCClient<TContract extends ContractRouter = ContractRouter> = {
+  [K in keyof TContract]: TContract[K] extends ContractRoute
     ? ORPCRouteClient<TContract[K]>
     : ORPCClient<TContract[K]>
 }
 
-export type ORPCRouteClient<TContract extends Route = Route> = {
+export type ORPCRouteClient<TContract extends ContractRoute = ContractRoute> = {
   (input: ORPCRouteClientInput<TContract>): Promise<ORPCRouteClientOutput<TContract>>
 }
 
-export type ORPCRouteClientInput<TContract extends Route = Route> = TContract extends Route<
-  infer _TMethod,
-  infer _TPath,
-  infer TParamsSchema,
-  infer TQuerySchema,
-  infer THeadersSchema,
-  infer TBodySchema
->
-  ? OptionalOnUndefined<{
-      params: InferInput<TParamsSchema>
-      query: InferInput<TQuerySchema>
-      headers: InferInput<THeadersSchema>
-      body: InferInput<TBodySchema>
-    }>
-  : unknown
+export type ORPCRouteClientInput<TContract extends ContractRoute = ContractRoute> =
+  TContract extends ContractRoute<
+    infer _TMethod,
+    infer _TPath,
+    infer TParamsSchema,
+    infer TQuerySchema,
+    infer THeadersSchema,
+    infer TBodySchema
+  >
+    ? OptionalOnUndefined<{
+        params: InferInput<TParamsSchema>
+        query: InferInput<TQuerySchema>
+        headers: InferInput<THeadersSchema>
+        body: InferInput<TBodySchema>
+      }>
+    : unknown
 
-export type ORPCRouteClientOutput<TContract extends Route = Route> = TContract extends Route<
-  infer _TMethod,
-  infer _TPath,
-  infer _TParamsSchema,
-  infer _TQuerySchema,
-  infer _THeadersSchema,
-  infer _TBodySchema,
-  infer TResponses
->
-  ? IsAny<TResponses> extends false
-    ? {
-        [K in keyof TResponses]: TResponses[K] extends RouteResponse<
-          infer TStatus,
-          infer TBody,
-          infer THeaders
-        >
-          ? {
-              status: TStatus
-              body: InferInput<TBody>
-              headers: InferInput<THeaders>
-            }
-          : unknown
-      }[keyof TResponses]
-    : {
-        status: 204
-        body: undefined
-        headers: Record<string, never>
-      }
-  : unknown
+export type ORPCRouteClientOutput<TContract extends ContractRoute = ContractRoute> =
+  TContract extends ContractRoute<
+    infer _TMethod,
+    infer _TPath,
+    infer _TParamsSchema,
+    infer _TQuerySchema,
+    infer _THeadersSchema,
+    infer _TBodySchema,
+    infer TResponses
+  >
+    ? IsAny<TResponses> extends false
+      ? {
+          [K in keyof TResponses]: TResponses[K] extends RouteResponse<
+            infer TStatus,
+            infer TBody,
+            infer THeaders
+          >
+            ? {
+                status: TStatus
+                body: InferInput<TBody>
+                headers: InferInput<THeaders>
+              }
+            : unknown
+        }[keyof TResponses]
+      : {
+          status: 204
+          body: undefined
+          headers: Record<string, never>
+        }
+    : unknown

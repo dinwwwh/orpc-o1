@@ -1,9 +1,12 @@
-import { Route } from '../route'
+import { ContractRoute } from '../route'
 import { HTTPPath, MergeHTTPPaths } from '../types/http'
-import { Router } from './def'
+import { ContractRouter } from './def'
 
-export type MergeRouterHTTPPaths<TRouter extends Router, TPrefix extends HTTPPath = any> = {
-  [K in keyof TRouter]: TRouter[K] extends Route<
+export type PrefixContractRouterHTTPPaths<
+  TRouter extends ContractRouter,
+  TPrefix extends HTTPPath = any
+> = {
+  [K in keyof TRouter]: TRouter[K] extends ContractRoute<
     infer TMethod,
     infer TPath,
     infer TParamsSchema,
@@ -12,7 +15,7 @@ export type MergeRouterHTTPPaths<TRouter extends Router, TPrefix extends HTTPPat
     infer TBodySchema,
     infer TResponses
   >
-    ? Route<
+    ? ContractRoute<
         TMethod,
         MergeHTTPPaths<TPrefix, TPath>,
         TParamsSchema,
@@ -21,5 +24,5 @@ export type MergeRouterHTTPPaths<TRouter extends Router, TPrefix extends HTTPPat
         TBodySchema,
         TResponses
       >
-    : MergeRouterHTTPPaths<TRouter[K], TPrefix>
+    : PrefixContractRouterHTTPPaths<TRouter[K], TPrefix>
 }

@@ -3,7 +3,7 @@ import { RouteResponse, RouteResponses } from '../route/types'
 import { HTTPStatus } from '../types/http'
 import { BodySchema, HeadersSchema } from '../types/validation'
 
-export class Plugin<TResponses extends RouteResponses = any> {
+export class ContractPlugin<TResponses extends RouteResponses = any> {
   public ['🔒']: {
     name: string
     responses: TResponses
@@ -25,7 +25,7 @@ export class Plugin<TResponses extends RouteResponses = any> {
     status: TStatus
     body?: TBodySchema
     headers?: THeadersSchema
-  }): Plugin<
+  }): ContractPlugin<
     IsAny<TResponses> extends true
       ? { [K in TStatus]: RouteResponse<TStatus, TBodySchema, THeadersSchema> }
       : Merge<TResponses, { [K in TStatus]: RouteResponse<TStatus, TBodySchema, THeadersSchema> }>
