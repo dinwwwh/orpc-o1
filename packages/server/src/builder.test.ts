@@ -1,7 +1,7 @@
 import { initORPCContract } from '@orpc/contract'
 import { object, string } from 'valibot'
 import { expect, it, vitest } from 'vitest'
-import { initORPCServer } from '..'
+import { initORPCServer } from '.'
 
 it('contract resolver chain and no chain is the same', () => {
   const contract = initORPCContract.router({

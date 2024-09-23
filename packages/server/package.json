@@ -25,15 +25,10 @@
         "import": "./dist/index.js",
         "default": "./dist/index.js"
       },
-      "./adapters/fetch": {
+      "./fetch": {
         "types": "./dist/src/adapters/fetch.d.ts",
         "import": "./dist/fetch.js",
         "default": "./dist/fetch.js"
-      },
-      "./handlers/router": {
-        "types": "./dist/src/handlers/router.d.ts",
-        "import": "./dist/router.js",
-        "default": "./dist/router.js"
       },
       "./🔓/*": {
         "types": "./dist/src/*.d.ts"
@@ -42,8 +37,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./adapters/fetch": "./src/adapters/fetch.ts",
-    "./handlers/router": "./src/handlers/router.ts",
+    "./fetch": "./src/adapters/fetch.ts",
     "./🔓/*": "./src/*.ts"
   },
   "files": [

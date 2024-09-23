@@ -14,7 +14,6 @@ export default defineConfig({
       entry: [
         path.resolve(__dirname, './src/index.ts'),
         path.resolve(__dirname, './src/adapters/fetch.ts'),
-        path.resolve(__dirname, './src/handlers/router.ts'),
       ],
       formats: ['es'],
     },

@@ -1,38 +1,38 @@
 import { initORPCContract } from '@orpc/contract'
 import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
-import { initORPCServer } from '..'
-import { findUserContract, findUserRouterContract } from '../__tests__/contract'
-import { ServerBuilder } from './server'
+import { initORPCServer } from '.'
+import { findUserContract, findUserRouterContract } from './__tests__/contract'
+import { Builder } from './builder'
 
 it('works with context', () => {
-  const server2 = new ServerBuilder<Record<string, never>>()
-  expectTypeOf<typeof server2 extends ServerBuilder<infer T> ? T : never>().toEqualTypeOf<
+  const server2 = new Builder<Record<string, never>>()
+  expectTypeOf<typeof server2 extends Builder<infer T> ? T : never>().toEqualTypeOf<
     Record<string, never>
   >()
 
-  const server3 = new ServerBuilder<{ userId: string }>()
-  expectTypeOf<typeof server3 extends ServerBuilder<infer T> ? T : never>().toEqualTypeOf<{
+  const server3 = new Builder<{ userId: string }>()
+  expectTypeOf<typeof server3 extends Builder<infer T> ? T : never>().toEqualTypeOf<{
     userId: string
   }>()
 })
 
 it('can override context', () => {
-  const server = new ServerBuilder<{ userId: string }>()
+  const server = new Builder<{ userId: string }>()
 
-  expectTypeOf<typeof server extends ServerBuilder<infer T> ? T : never>().toEqualTypeOf<{
+  expectTypeOf<typeof server extends Builder<infer T> ? T : never>().toEqualTypeOf<{
     userId: string
   }>()
 
   const server2 = server.context<{ userId: number }>()
 
-  expectTypeOf<typeof server2 extends ServerBuilder<infer T> ? T : never>().toEqualTypeOf<{
+  expectTypeOf<typeof server2 extends Builder<infer T> ? T : never>().toEqualTypeOf<{
     userId: number
   }>()
 })
 
 it('can handle contract', () => {
-  const server = new ServerBuilder()
+  const server = new Builder()
 
   server.contract(findUserRouterContract).router({
     find: server.contract(findUserContract).handler('' as any),

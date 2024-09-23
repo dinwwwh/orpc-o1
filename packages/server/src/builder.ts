@@ -1,11 +1,11 @@
 import type { Router } from '@orpc/contract'
 import { isRoute, Route } from '@orpc/contract'
-import { Context } from '../types'
-import { ServerRouteBuilder } from './route'
-import { ServerRouterBuilder } from './router'
+import { RouteBuilder } from './route'
+import { RouterBuilder } from './router'
+import { Context } from './types'
 
-export class ServerBuilder<TContext extends Context = any> {
-  context<TContext extends Context>(): ServerBuilder<TContext> {
+export class Builder<TContext extends Context = any> {
+  context<TContext extends Context>(): Builder<TContext> {
     return this as any
   }
 
@@ -20,20 +20,20 @@ export type ChainableContractImplementer<
   TContext extends Context = Context,
   TContract extends Route | Router = Route | Router
 > = TContract extends Route
-  ? ServerRouteBuilder<TContext, TContract, TContext>
+  ? RouteBuilder<TContext, TContract, TContext>
   : {
       [K in keyof TContract]: ChainableContractImplementer<TContext, TContract[K]>
-    } & ServerRouterBuilder<TContext, TContract>
+    } & RouterBuilder<TContext, TContract>
 
 export function createChainableContractImplementer<
   TContext extends Context = Context,
   TContract extends Route | Router = Route | Router
 >(contract: TContract): ChainableContractImplementer<TContext, TContract> {
   if (isRoute(contract)) {
-    return new ServerRouteBuilder(contract) as any
+    return new RouteBuilder(contract) as any
   }
 
-  return new Proxy(new ServerRouterBuilder(contract), {
+  return new Proxy(new RouterBuilder(contract), {
     get(target, key) {
       const contract = (target['🔓'].contract as Router)[key] as Route | Router | undefined
 

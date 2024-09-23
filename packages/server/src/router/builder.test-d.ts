@@ -2,10 +2,10 @@ import { initORPCContract } from '@orpc/contract'
 import { it } from 'vitest'
 import { initORPCServer } from '..'
 import { createUserContract, findUserContract, findUserRouterContract } from '../__tests__/contract'
-import { ServerBuilder } from './server'
+import { Builder } from '../builder'
 
-const server1 = new ServerBuilder<{ userId: string }>()
-const server2 = new ServerBuilder<{ userId: number }>()
+const server1 = new Builder<{ userId: string }>()
+const server2 = new Builder<{ userId: number }>()
 
 it('required match context and contract', () => {
   server1.contract(findUserRouterContract).router({

@@ -1,15 +1,11 @@
-import { Route } from '@orpc/contract'
-import { ServerMiddlewareOutput, ServerMiddlewareSpecification } from '../specifications/middleware'
-import {
-  ServerRouteHandler,
-  ServerRouteHandlerOutput,
-  ServerRouteSpecification,
-} from '../specifications/route'
+import { Route as ContractRoute } from '@orpc/contract'
+import { ServerMiddlewareOutput, ServerMiddlewareSpecification } from '../plugin/middleware'
 import { Context } from '../types'
+import { Route, RouteHandler, RouteHandlerOutput } from './def'
 
-export class ServerRouteBuilder<
+export class RouteBuilder<
   TContext extends Context = any,
-  TContract extends Route = any,
+  TContract extends ContractRoute = any,
   TCurrentContext extends Context = any
 > {
   public ['🔓']: {
@@ -26,7 +22,7 @@ export class ServerRouteBuilder<
 
   middleware<TMiddleware extends ServerMiddlewareSpecification<TCurrentContext, TContract>>(
     middleware: TMiddleware
-  ): ServerRouteBuilder<
+  ): RouteBuilder<
     TContext,
     TContract,
     Awaited<ReturnType<TMiddleware>> extends ServerMiddlewareOutput<infer TCurrentContext>
@@ -38,10 +34,8 @@ export class ServerRouteBuilder<
     return this as any
   }
 
-  handler(
-    handler: ServerRouteHandler<TCurrentContext, TContract>
-  ): ServerRouteSpecification<TContext, TContract> {
-    return new ServerRouteSpecification<TContext, TContract>({
+  handler(handler: RouteHandler<TCurrentContext, TContract>): Route<TContext, TContract> {
+    return new Route<TContext, TContract>({
       contract: this.routeContract,
       handler: async (input, ...others) => {
         let context: TContext = input.context
@@ -59,7 +53,7 @@ export class ServerRouteBuilder<
           }
 
           if ('response' in output) {
-            return output.response as ServerRouteHandlerOutput<TContract>
+            return output.response as RouteHandlerOutput<TContract>
           }
         }
 

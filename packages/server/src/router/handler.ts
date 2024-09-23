@@ -1,24 +1,19 @@
-import { HTTPMethod, isRoute } from '@orpc/contract'
-import Router from 'trek-router'
+import { HTTPMethod, isRoute as isContractRoute } from '@orpc/contract'
+import TrekRouter from 'trek-router'
 import { Merge } from 'type-fest'
 import { isValiError, parseAsync } from 'valibot'
-import {
-  isServerRouteSpecification,
-  ServerRouteHandlerInput,
-  ServerRouteSpecification,
-} from '../specifications/route'
-import { ServerRouterSpecification } from '../specifications/router'
+import { Route, RouteHandlerInput } from '../route/def'
+import { isRoute } from '../route/utils'
 import { convertOpenapiPathToTrekRouterPath } from '../utils'
+import { Router } from './def'
 
-export interface RouterHandler<TRouter extends ServerRouterSpecification = any> {
+export interface RouterHandler<TRouter extends Router = any> {
   (input: RouterHandlerInput<TRouter>): Promise<RouterHandlerOutput>
 }
 
-export type RouterHandlerInput<TRouter extends ServerRouterSpecification = any> = Merge<
+export type RouterHandlerInput<TRouter extends Router = any> = Merge<
   Omit<
-    TRouter extends ServerRouterSpecification<infer Context>
-      ? ServerRouteHandlerInput<Context>
-      : ServerRouteHandlerInput,
+    TRouter extends Router<infer Context> ? RouteHandlerInput<Context> : RouteHandlerInput,
     'params'
   >,
   { method: HTTPMethod; path: string }
@@ -30,19 +25,17 @@ export interface RouterHandlerOutput {
   headers?: unknown
 }
 
-export function createRouterHandler<T extends ServerRouterSpecification>(
-  routerSpec: T
-): RouterHandler<T> {
-  const router = new Router<ServerRouteSpecification>()
+export function createRouterHandler<T extends Router>(routerSpec: T): RouterHandler<T> {
+  const router = new TrekRouter<Route>()
 
-  const addToRouterRecursively = (routerSpec: ServerRouterSpecification) => {
+  const addToRouterRecursively = (routerSpec: Router) => {
     for (const key in routerSpec) {
       const item = routerSpec[key]
 
-      if (isServerRouteSpecification(item)) {
+      if (isRoute(item)) {
         const contract = item['🔓'].contract
 
-        if (!isRoute(contract)) {
+        if (!isContractRoute(contract)) {
           throw new Error(
             'Contract must be Route, it expected never happened, please report this issue'
           )
@@ -54,7 +47,7 @@ export function createRouterHandler<T extends ServerRouterSpecification>(
           item
         )
       } else {
-        addToRouterRecursively(item as ServerRouterSpecification)
+        addToRouterRecursively(item as Router)
       }
     }
   }

@@ -1,7 +1,7 @@
 import { initORPCContract } from '@orpc/contract'
 import { number, object, string } from 'valibot'
 import { expect, it } from 'vitest'
-import { ServerRouteBuilder } from './route'
+import { RouteBuilder } from './builder'
 
 it('middleware can modify context', async () => {
   const routeContract = initORPCContract.route({ method: 'GET', path: '/' }).response({
@@ -11,7 +11,7 @@ it('middleware can modify context', async () => {
     }),
   })
 
-  const handler = new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
+  const handler = new RouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
     .middleware(({ context }) => {
       expect(context).toMatchObject({ userId: 'id' })
 
@@ -67,7 +67,7 @@ it('middleware can response right away', async () => {
     }),
   })
 
-  const handler = new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
+  const handler = new RouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
     .middleware(({ context }) => {
       expect(context).toMatchObject({ userId: 'id' })
 
