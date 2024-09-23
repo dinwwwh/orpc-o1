@@ -1,5 +1,5 @@
-import type { RouterContractSpecification } from '@orpc/contract'
-import { isRouteContractSpecification, RouteContractSpecification } from '@orpc/contract'
+import type { Router } from '@orpc/contract'
+import { isRoute, Route } from '@orpc/contract'
 import { Context } from '../types'
 import { ServerRouteBuilder } from './route'
 import { ServerRouterBuilder } from './router'
@@ -9,7 +9,7 @@ export class ServerBuilder<TContext extends Context = any> {
     return this as any
   }
 
-  contract<TContract extends RouteContractSpecification | RouterContractSpecification>(
+  contract<TContract extends Route | Router>(
     contract: TContract
   ): ChainableContractImplementer<TContext, TContract> {
     return createChainableContractImplementer<TContext, TContract>(contract)
@@ -18,10 +18,8 @@ export class ServerBuilder<TContext extends Context = any> {
 
 export type ChainableContractImplementer<
   TContext extends Context = Context,
-  TContract extends RouteContractSpecification | RouterContractSpecification =
-    | RouteContractSpecification
-    | RouterContractSpecification
-> = TContract extends RouteContractSpecification
+  TContract extends Route | Router = Route | Router
+> = TContract extends Route
   ? ServerRouteBuilder<TContext, TContract, TContext>
   : {
       [K in keyof TContract]: ChainableContractImplementer<TContext, TContract[K]>
@@ -29,20 +27,15 @@ export type ChainableContractImplementer<
 
 export function createChainableContractImplementer<
   TContext extends Context = Context,
-  TContract extends RouteContractSpecification | RouterContractSpecification =
-    | RouteContractSpecification
-    | RouterContractSpecification
+  TContract extends Route | Router = Route | Router
 >(contract: TContract): ChainableContractImplementer<TContext, TContract> {
-  if (isRouteContractSpecification(contract)) {
+  if (isRoute(contract)) {
     return new ServerRouteBuilder(contract) as any
   }
 
   return new Proxy(new ServerRouterBuilder(contract), {
     get(target, key) {
-      const contract = (target['🔓'].contract as RouterContractSpecification)[key] as
-        | RouteContractSpecification
-        | RouterContractSpecification
-        | undefined
+      const contract = (target['🔓'].contract as Router)[key] as Route | Router | undefined
 
       if (!contract) {
         return Reflect.get(target, key)

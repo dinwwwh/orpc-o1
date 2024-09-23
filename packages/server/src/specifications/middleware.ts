@@ -1,11 +1,11 @@
-import { RouteContractSpecification } from '@orpc/contract'
+import { Route } from '@orpc/contract'
 import { Promisable } from 'type-fest'
 import { Context } from '../types'
 import { ServerRouteHandlerInput, ServerRouteHandlerOutput } from './route'
 
 export interface ServerMiddlewareSpecification<
   TContext extends Context = any,
-  TContract extends RouteContractSpecification = any
+  TContract extends Route = any
 > {
   (input: ServerRouteHandlerInput<TContext, TContract>): Promisable<
     ServerMiddlewareOutput<Context, TContract>
@@ -14,7 +14,7 @@ export interface ServerMiddlewareSpecification<
 
 export type ServerMiddlewareOutput<
   TContext extends Context = any,
-  TContract extends RouteContractSpecification = any
+  TContract extends Route = any
 > = {
   context?: TContext
   response?: ServerRouteHandlerOutput<TContract>

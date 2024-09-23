@@ -1,8 +1,4 @@
-import {
-  isRouteContractSpecification,
-  RouterContractSpecification,
-  ValidationSchema,
-} from '@orpc/contract'
+import { BaseSchema, isRoute, Router, RouteResponse } from '@orpc/contract'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import {
   ContentObject,
@@ -26,7 +22,7 @@ const JsonSchemaSupportOnParametersSchema = object({
 })
 
 export function generateOpenApiSpec(
-  router: RouterContractSpecification,
+  router: Router,
   spec: Omit<OpenAPIObject, 'openapi'>
 ): OpenAPIObject {
   const builder = OpenApiBuilder.create({
@@ -37,20 +33,20 @@ export function generateOpenApiSpec(
   // TODO: tags
   // TODO: schema references
 
-  const addPathsToBuilderRecursively = (router: RouterContractSpecification) => {
+  const addPathsToBuilderRecursively = (router: Router) => {
     for (const key in router) {
       const item = router[key]
 
-      if (isRouteContractSpecification(item)) {
+      if (isRoute(item)) {
         const internal = item['🔒']
 
         const requestBody = (() => {
-          if (!internal.BodySchema) return undefined
+          if (!internal.body.schema) return undefined
 
           const content: ContentObject = {}
 
           content['application/json'] = {
-            schema: toJsonSchema(internal.BodySchema, { force: true }) as SchemaObject,
+            schema: toJsonSchema(internal.body.schema, { force: true }) as SchemaObject,
             // TODO: examples
             // TODO: example
           }
@@ -66,7 +62,8 @@ export function generateOpenApiSpec(
 
           const responses: ResponsesObject = {}
 
-          for (const response of Object.values(internal.responses)) {
+          for (const response_ of Object.values(internal.responses)) {
+            const response = response_ as RouteResponse
             const content: ContentObject = {}
 
             if (response.body) {
@@ -102,7 +99,7 @@ export function generateOpenApiSpec(
             })()
 
             responses[response.status] = {
-              description: response.description,
+              description: response.description ?? String(response.status),
               content,
               headers,
             } satisfies ResponseObject
@@ -117,12 +114,12 @@ export function generateOpenApiSpec(
             description: internal.description,
             deprecated: internal.deprecated,
             parameters: [
-              ...getPathParameters(internal.path, internal.ParamsSchema),
-              ...(internal.QuerySchema
-                ? getParametersFromSchema(internal.QuerySchema, 'query')
+              ...getPathParameters(internal.path, internal.params.schema),
+              ...(internal.query.schema
+                ? getParametersFromSchema(internal.query.schema, 'query')
                 : []),
-              ...(internal.HeadersSchema
-                ? getParametersFromSchema(internal.HeadersSchema, 'header')
+              ...(internal.headers.schema
+                ? getParametersFromSchema(internal.headers.schema, 'header')
                 : []),
             ],
             requestBody,
@@ -140,7 +137,7 @@ export function generateOpenApiSpec(
   return builder.getSpec()
 }
 
-function getPathParameters(path: string, schema?: ValidationSchema): ParameterObject[] {
+function getPathParameters(path: string, schema?: BaseSchema): ParameterObject[] {
   const paramsFromPath = path.match(/{[^}]+}/g)?.map((param) => param.slice(1, -1))
 
   const parsedSchema = safeParse(
@@ -171,7 +168,7 @@ function getPathParameters(path: string, schema?: ValidationSchema): ParameterOb
 }
 
 function getParametersFromSchema(
-  schema: ValidationSchema,
+  schema: BaseSchema,
   in_: ParameterObject['in']
 ): ParameterObject[] {
   const jsonSchema = toJsonSchema(schema, { force: true })

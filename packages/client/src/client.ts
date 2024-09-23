@@ -1,27 +1,21 @@
-import {
-  isRouteContractSpecification,
-  OptionalOnUndefined,
-  RouteContractSpecification,
-  RouterContractSpecification,
-  RouteResponse,
-} from '@orpc/contract'
+import { isRoute, OptionalOnUndefined, Route, Router, RouteResponse } from '@orpc/contract'
 import { IsAny } from 'type-fest'
 import type { InferInput } from 'valibot'
 
-export function createORPCClient<TContract extends RouterContractSpecification>(opts: {
+export function createORPCClient<TContract extends Router>(opts: {
   contract: TContract
   baseURL: string
   fetch?: typeof fetch
 }): ORPCClient<TContract> {
-  const createProxy = (contract: RouteContractSpecification | TContract) => {
+  const createProxy = (contract: Route | TContract) => {
     return new Proxy(contract as object, {
       get(target, prop) {
         const contract = Reflect.get(target, prop)
 
         if (contract === undefined) return undefined
 
-        if (isRouteContractSpecification(contract)) {
-          const internal = contract['🔒'] as RouteContractSpecification['🔒']
+        if (isRoute(contract)) {
+          const internal = contract['🔒'] as Route['🔒']
           return async (input: ORPCRouteClientInput): Promise<ORPCRouteClientOutput> => {
             let contractPath = internal.path.startsWith('/') ? '.' + internal.path : internal.path
 
@@ -86,23 +80,17 @@ export function createORPCClient<TContract extends RouterContractSpecification>(
   return createProxy(opts.contract)
 }
 
-export type ORPCClient<
-  TContract extends RouterContractSpecification = RouterContractSpecification
-> = {
-  [K in keyof TContract]: TContract[K] extends RouteContractSpecification
+export type ORPCClient<TContract extends Router = Router> = {
+  [K in keyof TContract]: TContract[K] extends Route
     ? ORPCRouteClient<TContract[K]>
     : ORPCClient<TContract[K]>
 }
 
-export type ORPCRouteClient<
-  TContract extends RouteContractSpecification = RouteContractSpecification
-> = {
+export type ORPCRouteClient<TContract extends Route = Route> = {
   (input: ORPCRouteClientInput<TContract>): Promise<ORPCRouteClientOutput<TContract>>
 }
 
-export type ORPCRouteClientInput<
-  TContract extends RouteContractSpecification = RouteContractSpecification
-> = TContract extends RouteContractSpecification<
+export type ORPCRouteClientInput<TContract extends Route = Route> = TContract extends Route<
   infer _TMethod,
   infer _TPath,
   infer TParamsSchema,
@@ -118,9 +106,7 @@ export type ORPCRouteClientInput<
     }>
   : unknown
 
-export type ORPCRouteClientOutput<
-  TContract extends RouteContractSpecification = RouteContractSpecification
-> = TContract extends RouteContractSpecification<
+export type ORPCRouteClientOutput<TContract extends Route = Route> = TContract extends Route<
   infer _TMethod,
   infer _TPath,
   infer _TParamsSchema,

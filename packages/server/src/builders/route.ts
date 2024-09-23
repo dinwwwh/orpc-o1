@@ -1,4 +1,4 @@
-import { RouteContractSpecification } from '@orpc/contract'
+import { Route } from '@orpc/contract'
 import { ServerMiddlewareOutput, ServerMiddlewareSpecification } from '../specifications/middleware'
 import {
   ServerRouteHandler,
@@ -9,7 +9,7 @@ import { Context } from '../types'
 
 export class ServerRouteBuilder<
   TContext extends Context = any,
-  TContract extends RouteContractSpecification = any,
+  TContract extends Route = any,
   TCurrentContext extends Context = any
 > {
   public ['🔓']: {

@@ -1,9 +1,10 @@
 import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
 import { BodySchema, HeadersSchema, ParamsSchema, QuerySchema } from '../types/validation'
-import { RouteContractSpecification, RouteResponses } from './route'
+import { Route } from './def'
+import { RouteResponses } from './types'
 
-const route = new RouteContractSpecification({ method: 'GET', path: '/foo' })
+const route = new Route({ method: 'GET', path: '/foo' })
 type Internal = {
   method: 'GET'
   path: '/foo'
@@ -24,10 +25,12 @@ it('can set schema', () => {
     id: string(),
   })
 
-  expectTypeOf(route.params(schema)['🔒'].ParamsSchema).toMatchTypeOf<typeof schema | undefined>()
-  expectTypeOf(route.query(schema)['🔒'].QuerySchema).toMatchTypeOf<typeof schema | undefined>()
-  expectTypeOf(route.headers(schema)['🔒'].HeadersSchema).toMatchTypeOf<typeof schema | undefined>()
-  expectTypeOf(route.body(schema)['🔒'].BodySchema).toMatchTypeOf<typeof schema | undefined>()
+  expectTypeOf(route.params(schema)['🔒'].params.schema).toMatchTypeOf<typeof schema | undefined>()
+  expectTypeOf(route.query(schema)['🔒'].query.schema).toMatchTypeOf<typeof schema | undefined>()
+  expectTypeOf(route.headers(schema)['🔒'].headers.schema).toMatchTypeOf<
+    typeof schema | undefined
+  >()
+  expectTypeOf(route.body(schema)['🔒'].body.schema).toMatchTypeOf<typeof schema | undefined>()
 })
 
 it('can set responses', () => {
@@ -43,7 +46,7 @@ it('can set responses', () => {
       body: schema,
     })['🔒'].responses[200]
   ).toMatchTypeOf<{
-    description: string
+    description?: string
     body?: typeof schema
     headers?: HeadersSchema
   }>()
@@ -55,7 +58,7 @@ it('can set responses', () => {
       headers: schema,
     })['🔒'].responses[500]
   ).toMatchTypeOf<{
-    description: string
+    description?: string
     body?: BodySchema
     headers?: typeof schema
   }>()
@@ -73,7 +76,7 @@ it('can chain responses', () => {
     age: string(),
   })
 
-  const route = new RouteContractSpecification({ method: 'GET', path: '/foo' })
+  const route = new Route({ method: 'GET', path: '/foo' })
     .response({
       status: 200,
       description: 'foo',
@@ -87,12 +90,12 @@ it('can chain responses', () => {
 
   expectTypeOf(route['🔒'].responses).toMatchTypeOf<{
     '200': {
-      description: string
+      description?: string
       body?: typeof schema1
       headers?: HeadersSchema
     }
     '501': {
-      description: string
+      description?: string
       body?: BodySchema
       headers?: typeof schema2
     }
@@ -100,18 +103,18 @@ it('can chain responses', () => {
 })
 
 it('can prefix path', () => {
-  const route = new RouteContractSpecification({ method: 'GET', path: '/foo' }).prefix('/bar')
+  const route = new Route({ method: 'GET', path: '/foo' }).prefix('/bar')
   expectTypeOf(route['🔒'].path).toMatchTypeOf<'/bar/foo'>()
 
-  const route2 = new RouteContractSpecification({ method: 'GET', path: '/foo' }).prefix('/bar/')
+  const route2 = new Route({ method: 'GET', path: '/foo' }).prefix('/bar/')
   expectTypeOf(route2['🔒'].path).toMatchTypeOf<'/bar/foo'>()
 
-  const route3 = new RouteContractSpecification({ method: 'GET', path: '/foo' }).prefix('/')
+  const route3 = new Route({ method: 'GET', path: '/foo' }).prefix('/')
   expectTypeOf(route3['🔒'].path).toMatchTypeOf<'/foo'>()
 
-  const route4 = new RouteContractSpecification({ method: 'GET', path: '/foo/' }).prefix('/')
+  const route4 = new Route({ method: 'GET', path: '/foo/' }).prefix('/')
   expectTypeOf(route4['🔒'].path).toMatchTypeOf<'/foo/'>()
 
-  const route5 = new RouteContractSpecification({ method: 'GET', path: '/foo/' }).prefix('/api/')
+  const route5 = new Route({ method: 'GET', path: '/foo/' }).prefix('/api/')
   expectTypeOf(route5['🔒'].path).toMatchTypeOf<'/api/foo'>()
 })

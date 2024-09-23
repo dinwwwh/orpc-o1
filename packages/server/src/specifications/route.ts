@@ -1,16 +1,11 @@
-import {
-  HTTPPath,
-  OptionalOnUndefined,
-  RouteContractSpecification,
-  RouteResponse,
-} from '@orpc/contract'
+import { HTTPPath, OptionalOnUndefined, Route, RouteResponse } from '@orpc/contract'
 import { IsAny, Promisable } from 'type-fest'
 import { InferInput, InferOutput } from 'valibot'
 import { Context } from '../types'
 
 export class ServerRouteSpecification<
   TContext extends Context = any,
-  TContract extends RouteContractSpecification = any
+  TContract extends Route = any
 > {
   public ['🔓']: {
     contract: TContract
@@ -25,10 +20,7 @@ export class ServerRouteSpecification<
   }
 }
 
-export interface ServerRouteHandler<
-  TContext extends Context = any,
-  TContract extends RouteContractSpecification = any
-> {
+export interface ServerRouteHandler<TContext extends Context = any, TContract extends Route = any> {
   (input: ServerRouteHandlerInput<TContext, TContract>): Promisable<
     ServerRouteHandlerOutput<TContract>
   >
@@ -36,8 +28,8 @@ export interface ServerRouteHandler<
 
 export type ServerRouteHandlerInput<
   TContext extends Context = any,
-  TContract extends RouteContractSpecification = any
-> = TContract extends RouteContractSpecification<
+  TContract extends Route = any
+> = TContract extends Route<
   infer TMethod,
   infer _TPath,
   infer TParamsSchema,
@@ -56,32 +48,31 @@ export type ServerRouteHandlerInput<
     }
   : never
 
-export type ServerRouteHandlerOutput<TContract extends RouteContractSpecification = any> =
-  TContract extends RouteContractSpecification<
-    infer _TMethod,
-    infer _TPath,
-    infer _TParamsSchema,
-    infer _TQuerySchema,
-    infer _THeadersSchema,
-    infer _TBodySchema,
-    infer TResponses
-  >
-    ? IsAny<TResponses> extends true
-      ? void
-      : {
-          [K in keyof TResponses]: TResponses[K] extends RouteResponse<
-            infer TStatus,
-            infer TBody,
-            infer THeaders
-          >
-            ? OptionalOnUndefined<{
-                status: TStatus
-                body: InferInput<TBody>
-                headers: InferInput<THeaders>
-              }>
-            : unknown
-        }[keyof TResponses]
-    : unknown
+export type ServerRouteHandlerOutput<TContract extends Route = any> = TContract extends Route<
+  infer _TMethod,
+  infer _TPath,
+  infer _TParamsSchema,
+  infer _TQuerySchema,
+  infer _THeadersSchema,
+  infer _TBodySchema,
+  infer TResponses
+>
+  ? IsAny<TResponses> extends true
+    ? void
+    : {
+        [K in keyof TResponses]: TResponses[K] extends RouteResponse<
+          infer TStatus,
+          infer TBody,
+          infer THeaders
+        >
+          ? OptionalOnUndefined<{
+              status: TStatus
+              body: InferInput<TBody>
+              headers: InferInput<THeaders>
+            }>
+          : unknown
+      }[keyof TResponses]
+  : unknown
 
 export function isServerRouteSpecification(value: unknown): value is ServerRouteSpecification {
   if (value instanceof ServerRouteSpecification) return true

@@ -1,4 +1,4 @@
-import { HTTPMethod, isRouteContractSpecification } from '@orpc/contract'
+import { HTTPMethod, isRoute } from '@orpc/contract'
 import Router from 'trek-router'
 import { Merge } from 'type-fest'
 import { isValiError, parseAsync } from 'valibot'
@@ -42,9 +42,9 @@ export function createRouterHandler<T extends ServerRouterSpecification>(
       if (isServerRouteSpecification(item)) {
         const contract = item['🔓'].contract
 
-        if (!isRouteContractSpecification(contract)) {
+        if (!isRoute(contract)) {
           throw new Error(
-            'Contract must be RouteContractSpecification, it expected never happened, please report this issue'
+            'Contract must be Route, it expected never happened, please report this issue'
           )
         }
 

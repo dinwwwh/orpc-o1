@@ -1,12 +1,13 @@
 /** dinwwwh */
 
-import { ContractBuilder } from './builders/contract'
+import { Builder } from './builder'
 
-export const initORPCContract = new ContractBuilder()
+export const initORPCContract = new Builder()
 
-export * from './builders/contract'
-export * from './specifications/route'
-export * from './specifications/router'
+export * from './builder'
+export * from './plugin'
+export * from './route'
+export * from './router'
 export * from './types/http'
 export * from './types/utils'
 export * from './types/validation'

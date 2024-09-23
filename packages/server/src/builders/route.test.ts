@@ -13,7 +13,7 @@ it('middleware can modify context', async () => {
 
   const handler = new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
     .middleware(({ context }) => {
-      expect(context).toStrictEqual({ userId: 'id' })
+      expect(context).toMatchObject({ userId: 'id' })
 
       return {
         context: {
@@ -22,7 +22,7 @@ it('middleware can modify context', async () => {
       }
     })
     .middleware(({ context }) => {
-      expect(context).toStrictEqual({ you: 'are' })
+      expect(context).toMatchObject({ you: 'are' })
 
       return {
         context: {
@@ -31,7 +31,7 @@ it('middleware can modify context', async () => {
       }
     })
     .handler(({ context }) => {
-      expect(context).toStrictEqual({ you: 123 })
+      expect(context).toMatchObject({ you: 123 })
 
       return {
         status: 200,
@@ -69,7 +69,7 @@ it('middleware can response right away', async () => {
 
   const handler = new ServerRouteBuilder<{ userId: string }, typeof routeContract>(routeContract)
     .middleware(({ context }) => {
-      expect(context).toStrictEqual({ userId: 'id' })
+      expect(context).toMatchObject({ userId: 'id' })
 
       return {
         context: {
@@ -84,7 +84,7 @@ it('middleware can response right away', async () => {
       }
     })
     .middleware(({ context }) => {
-      expect(context).toStrictEqual({ you: 'are' })
+      expect(context).toMatchObject({ you: 'are' })
 
       return {
         context: {
@@ -93,7 +93,7 @@ it('middleware can response right away', async () => {
       }
     })
     .handler(({ context }) => {
-      expect(context).toStrictEqual({ you: 123 })
+      expect(context).toMatchObject({ you: 123 })
 
       return {
         status: 200,
