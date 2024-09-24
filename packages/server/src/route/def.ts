@@ -1,6 +1,6 @@
-import { ContractRoute, HTTPPath, OptionalOnUndefined, RouteResponse } from '@orpc/contract'
-import { IsAny, Promisable } from 'type-fest'
-import { InferInput, InferOutput } from 'valibot'
+import { ContractRoute, HTTPPath, InferInputResponse } from '@orpc/contract'
+import { Promisable } from 'type-fest'
+import { InferOutput } from 'valibot'
 import { ServerContext } from '../types'
 
 export class ServerRoute<
@@ -50,28 +50,6 @@ export type RouteHandlerInput<
   : never
 
 export type RouteHandlerOutput<TContract extends ContractRoute = any> =
-  TContract extends ContractRoute<
-    infer _TMethod,
-    infer _TPath,
-    infer _TParamsSchema,
-    infer _TQuerySchema,
-    infer _THeadersSchema,
-    infer _TBodySchema,
-    infer TResponses
-  >
-    ? IsAny<TResponses> extends true
-      ? void
-      : {
-          [K in keyof TResponses]: TResponses[K] extends RouteResponse<
-            infer TStatus,
-            infer TBody,
-            infer THeaders
-          >
-            ? OptionalOnUndefined<{
-                status: TStatus
-                body: InferInput<TBody>
-                headers: InferInput<THeaders>
-              }>
-            : unknown
-        }[keyof TResponses]
-    : unknown
+  TContract extends ContractRoute<any, any, any, any, any, any, infer TResponse>
+    ? InferInputResponse<TResponse>
+    : never

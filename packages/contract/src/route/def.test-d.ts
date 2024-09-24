@@ -20,9 +20,12 @@ const authPlugin = new ContractPlugin({ name: 'auth' }).response({
 it('can use plugin', () => {
   const route = new ContractRoute({ method: 'GET', path: '/foo' }).use(authPlugin)
 
-  expectTypeOf(route['🔒'].responses['401']).toMatchTypeOf<{
-    status: 401
-    body?: typeof authBodySchema
-    headers?: typeof authHeaderSchema
-  }>()
+  expectTypeOf(route['__cr'].responses).toMatchTypeOf<
+    | {
+        status: 401
+        body?: typeof authBodySchema
+        headers?: typeof authHeaderSchema
+      }[]
+    | undefined
+  >()
 })

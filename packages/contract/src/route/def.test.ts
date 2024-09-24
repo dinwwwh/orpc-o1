@@ -1,23 +1,16 @@
 import { object, string } from 'valibot'
 import { expectTypeOf, it } from 'vitest'
-import { BodySchema, HeadersSchema, ParamsSchema, QuerySchema } from '../types/validation'
+import { BodySchema, HeadersSchema } from '../types/validation'
 import { ContractRoute } from './def'
-import { RouteResponses } from './types'
 
 const route = new ContractRoute({ method: 'GET', path: '/foo' })
 type Internal = {
   method: 'GET'
   path: '/foo'
-  description?: string
-  ParamsSchema?: ParamsSchema
-  QuerySchema?: QuerySchema
-  HeadersSchema?: HeadersSchema
-  BodySchema?: BodySchema
-  responses: RouteResponses
 }
 
 it('works after construction', () => {
-  expectTypeOf(route['🔒']).toMatchTypeOf<Internal>()
+  expectTypeOf(route.__cr).toMatchTypeOf<Internal>()
 })
 
 it('can set schema', () => {
@@ -25,12 +18,12 @@ it('can set schema', () => {
     id: string(),
   })
 
-  expectTypeOf(route.params(schema)['🔒'].params.schema).toMatchTypeOf<typeof schema | undefined>()
-  expectTypeOf(route.query(schema)['🔒'].query.schema).toMatchTypeOf<typeof schema | undefined>()
-  expectTypeOf(route.headers(schema)['🔒'].headers.schema).toMatchTypeOf<
+  expectTypeOf(route.params(schema).__cr.params?.schema).toMatchTypeOf<typeof schema | undefined>()
+  expectTypeOf(route.query(schema).__cr.query?.schema).toMatchTypeOf<typeof schema | undefined>()
+  expectTypeOf(route.headers(schema).__cr.headers?.schema).toMatchTypeOf<
     typeof schema | undefined
   >()
-  expectTypeOf(route.body(schema)['🔒'].body.schema).toMatchTypeOf<typeof schema | undefined>()
+  expectTypeOf(route.body(schema).__cr.body?.schema).toMatchTypeOf<typeof schema | undefined>()
 })
 
 it('can set responses', () => {
@@ -44,24 +37,32 @@ it('can set responses', () => {
       status: 200,
       description: 'foo',
       body: schema,
-    })['🔒'].responses[200]
-  ).toMatchTypeOf<{
-    description?: string
-    body?: typeof schema
-    headers?: HeadersSchema
-  }>()
+    }).__cr.responses
+  ).toMatchTypeOf<
+    | {
+        status: 200
+        description?: string
+        body?: typeof schema
+        headers?: HeadersSchema
+      }[]
+    | undefined
+  >()
 
   expectTypeOf(
     route.response({
       status: 500,
       description: 'foo',
       headers: schema,
-    })['🔒'].responses[500]
-  ).toMatchTypeOf<{
-    description?: string
-    body?: BodySchema
-    headers?: typeof schema
-  }>()
+    }).__cr.responses
+  ).toMatchTypeOf<
+    | {
+        status: 500
+        description?: string
+        body?: BodySchema
+        headers?: typeof schema
+      }[]
+    | undefined
+  >()
 })
 
 it('can chain responses', () => {
@@ -88,33 +89,36 @@ it('can chain responses', () => {
       headers: schema2,
     })
 
-  expectTypeOf(route['🔒'].responses).toMatchTypeOf<{
-    '200': {
-      description?: string
-      body?: typeof schema1
-      headers?: HeadersSchema
-    }
-    '501': {
-      description?: string
-      body?: BodySchema
-      headers?: typeof schema2
-    }
-  }>()
+  expectTypeOf(route.__cr.responses).toMatchTypeOf<
+    | (
+        | {
+            description?: string
+            body?: typeof schema1
+            headers?: HeadersSchema
+          }
+        | {
+            description?: string
+            body?: BodySchema
+            headers?: typeof schema2
+          }
+      )[]
+    | undefined
+  >()
 })
 
 it('can prefix path', () => {
   const route = new ContractRoute({ method: 'GET', path: '/foo' }).prefix('/bar')
-  expectTypeOf(route['🔒'].path).toMatchTypeOf<'/bar/foo'>()
+  expectTypeOf(route.__cr.path).toMatchTypeOf<'/bar/foo'>()
 
   const route2 = new ContractRoute({ method: 'GET', path: '/foo' }).prefix('/bar/')
-  expectTypeOf(route2['🔒'].path).toMatchTypeOf<'/bar/foo'>()
+  expectTypeOf(route2.__cr.path).toMatchTypeOf<'/bar/foo'>()
 
   const route3 = new ContractRoute({ method: 'GET', path: '/foo' }).prefix('/')
-  expectTypeOf(route3['🔒'].path).toMatchTypeOf<'/foo'>()
+  expectTypeOf(route3.__cr.path).toMatchTypeOf<'/foo'>()
 
   const route4 = new ContractRoute({ method: 'GET', path: '/foo/' }).prefix('/')
-  expectTypeOf(route4['🔒'].path).toMatchTypeOf<'/foo/'>()
+  expectTypeOf(route4.__cr.path).toMatchTypeOf<'/foo/'>()
 
   const route5 = new ContractRoute({ method: 'GET', path: '/foo/' }).prefix('/api/')
-  expectTypeOf(route5['🔒'].path).toMatchTypeOf<'/api/foo'>()
+  expectTypeOf(route5.__cr.path).toMatchTypeOf<'/api/foo'>()
 })

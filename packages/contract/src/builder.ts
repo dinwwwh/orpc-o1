@@ -1,26 +1,28 @@
 import { ContractPlugin } from './plugin'
-import { ContractRoute, MergeRouteResponses, RouteResponses } from './route'
+import { contractRouteUsePlugin, ContractRouteUsePlugin } from './plugin/route'
+import { ContractRoute } from './route'
 import { ContractRouter, createEnhancedContractRouter, EnhancedContractRouter } from './router'
 import { HTTPMethod, HTTPPath, StandardizeHTTPPath } from './types/http'
+import { MergeUnions } from './types/utils'
 import { standardizeHTTPPath } from './utils/http'
 
-export class ContractBuilder<TResponses extends RouteResponses = any> {
-  public ['🔒']: {
-    plugins?: ContractPlugin[]
-  } = {}
+export class ContractBuilder<TPlugin extends ContractPlugin = any> {
+  constructor(
+    public __cb: {
+      plugins?: TPlugin[]
+    } = {}
+  ) {}
 
   route<TMethod extends HTTPMethod, TPath extends HTTPPath>(
     opts: ConstructorParameters<typeof ContractRoute<TMethod, TPath>>[0]
-  ): ContractRoute<TMethod, StandardizeHTTPPath<TPath>, any, any, any, any, TResponses> {
+  ): ContractRouteUsePlugin<ContractRoute<TMethod, StandardizeHTTPPath<TPath>>, TPlugin> {
     const route = new ContractRoute({
       ...opts,
       path: standardizeHTTPPath(opts.path),
     })
 
-    if (this['🔒'].plugins) {
-      for (const plugin of this['🔒'].plugins) {
-        route.use(plugin)
-      }
+    if (this.__cb.plugins) {
+      return contractRouteUsePlugin(route, this.__cb.plugins) as any
     }
 
     return route as any
@@ -34,23 +36,9 @@ export class ContractBuilder<TResponses extends RouteResponses = any> {
     return new ContractPlugin(opts)
   }
 
-  use<T extends ContractPlugin>(
-    plugin: T
-  ): ContractBuilder<
-    T extends ContractPlugin<infer T2Responses>
-      ? MergeRouteResponses<TResponses, T2Responses>
-      : never
-  > {
-    const builder = new ContractBuilder()
-
-    builder['🔒'].plugins ??= []
-
-    if (this['🔒'].plugins) {
-      builder['🔒'].plugins.push(...this['🔒'].plugins)
-    }
-
-    builder['🔒'].plugins.push(plugin)
-
-    return builder as any
+  use<T extends ContractPlugin>(plugin: T): ContractBuilder<MergeUnions<TPlugin, T>> {
+    return new ContractBuilder({
+      plugins: [...(this.__cb.plugins ?? []), plugin],
+    }) as any
   }
 }

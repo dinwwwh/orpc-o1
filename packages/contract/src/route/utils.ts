@@ -4,7 +4,7 @@ export function isContractRoute(value: unknown): value is ContractRoute {
   if (value instanceof ContractRoute) return true
 
   try {
-    const internal = (value as any)?.['🔒']
+    const internal = (value as any)?.__cr
 
     return (
       typeof internal === 'object' &&

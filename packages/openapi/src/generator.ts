@@ -38,10 +38,10 @@ export function generateOpenApiSpec(
       const item = router[key]
 
       if (isContractRoute(item)) {
-        const internal = item['🔒']
+        const internal = item.__cr
 
         const requestBody = (() => {
-          if (!internal.body.schema) return undefined
+          if (!internal.body?.schema) return undefined
 
           const content: ContentObject = {}
 
@@ -58,11 +58,12 @@ export function generateOpenApiSpec(
         })()
 
         const responses = (() => {
-          if (Object.keys(internal.responses).length === 0) return undefined
+          if (!internal.responses || internal.responses.length === 0) return undefined
 
           const responses: ResponsesObject = {}
 
-          for (const response_ of Object.values(internal.responses)) {
+          // FIX: case multiple responses with same status
+          for (const response_ of internal.responses) {
             const response = response_ as RouteResponse
             const content: ContentObject = {}
 
@@ -114,11 +115,11 @@ export function generateOpenApiSpec(
             description: internal.description,
             deprecated: internal.deprecated,
             parameters: [
-              ...getPathParameters(internal.path, internal.params.schema),
-              ...(internal.query.schema
+              ...getPathParameters(internal.path, internal.params?.schema),
+              ...(internal.query?.schema
                 ? getParametersFromSchema(internal.query.schema, 'query')
                 : []),
-              ...(internal.headers.schema
+              ...(internal.headers?.schema
                 ? getParametersFromSchema(internal.headers.schema, 'header')
                 : []),
             ],

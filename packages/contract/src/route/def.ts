@@ -1,4 +1,5 @@
 import { ContractPlugin } from '../plugin'
+import { contractRouteUsePlugin, ContractRouteUsePlugin } from '../plugin/route'
 import {
   HTTPMethod,
   HTTPPath,
@@ -6,9 +7,10 @@ import {
   MergeHTTPPaths,
   StandardizeHTTPPath,
 } from '../types/http'
+import { MergeUnions } from '../types/utils'
 import { BodySchema, HeadersSchema, ParamsSchema, QuerySchema } from '../types/validation'
 import { mergeHTTPPaths } from '../utils/http'
-import { MergeRouteResponses, RouteResponse, RouteResponses } from './types'
+import { RouteResponse } from './types'
 
 export class ContractRoute<
   TMethod extends HTTPMethod = any,
@@ -17,45 +19,30 @@ export class ContractRoute<
   TQuerySchema extends QuerySchema = any,
   THeadersSchema extends HeadersSchema = any,
   TBodySchema extends BodySchema = any,
-  TResponses extends RouteResponses = any
+  TResponse extends RouteResponse = any
 > {
-  public ['🔒']: {
-    method: TMethod
-    path: TPath
-    summary?: string
-    description?: string
-    deprecated?: boolean
-    params: {
-      schema?: TParamsSchema
+  constructor(
+    public __cr: {
+      method: TMethod
+      path: TPath
+      summary?: string
+      description?: string
+      deprecated?: boolean
+      params?: {
+        schema?: TParamsSchema
+      }
+      query?: {
+        schema?: TQuerySchema
+      }
+      headers?: {
+        schema?: THeadersSchema
+      }
+      body?: {
+        schema?: TBodySchema
+      }
+      responses?: TResponse[]
     }
-    query: {
-      schema?: TQuerySchema
-    }
-    headers: {
-      schema?: THeadersSchema
-    }
-    body: {
-      schema?: TBodySchema
-    }
-    responses: TResponses
-  }
-
-  constructor(opts: {
-    method: TMethod
-    path: TPath
-    summary?: string
-    description?: string
-    deprecated?: boolean
-  }) {
-    this['🔒'] = {
-      params: {},
-      query: {},
-      headers: {},
-      body: {},
-      responses: {} as any,
-      ...opts,
-    }
-  }
+  ) {}
 
   prefix<TPrefix extends HTTPPath>(
     prefix: TPrefix
@@ -66,53 +53,48 @@ export class ContractRoute<
     TQuerySchema,
     THeadersSchema,
     TBodySchema,
-    TResponses
+    TResponse
   > {
-    this['🔒'].path = mergeHTTPPaths(prefix, this['🔒'].path) as any
+    this.__cr.path = mergeHTTPPaths(prefix, this.__cr.path) as any
     return this as any
   }
 
   summary(summary: string): this {
-    this['🔒'].summary = summary
+    this.__cr.summary = summary
     return this
   }
 
   description(description: string): this {
-    this['🔒'].description = description
+    this.__cr.description = description
     return this
   }
 
   deprecated(deprecated: boolean): this {
-    this['🔒'].deprecated = deprecated
+    this.__cr.deprecated = deprecated
     return this
   }
 
   params<TSchema extends ParamsSchema>(
     schema: TSchema
-  ): ContractRoute<TMethod, TPath, TSchema, TQuerySchema, THeadersSchema, TBodySchema, TResponses> {
-    this['🔒'].params.schema = schema as any
+  ): ContractRoute<TMethod, TPath, TSchema, TQuerySchema, THeadersSchema, TBodySchema, TResponse> {
+    this.__cr.params ??= {}
+    this.__cr.params.schema = schema as any
     return this as any
   }
 
   query<TSchema extends QuerySchema>(
     schema: TSchema
-  ): ContractRoute<
-    TMethod,
-    TPath,
-    TParamsSchema,
-    TSchema,
-    THeadersSchema,
-    TBodySchema,
-    TResponses
-  > {
-    this['🔒'].query.schema = schema as any
+  ): ContractRoute<TMethod, TPath, TParamsSchema, TSchema, THeadersSchema, TBodySchema, TResponse> {
+    this.__cr.query ??= {}
+    this.__cr.query.schema = schema as any
     return this as any
   }
 
   headers<TSchema extends HeadersSchema>(
     schema: TSchema
-  ): ContractRoute<TMethod, TPath, TParamsSchema, TQuerySchema, TSchema, TBodySchema, TResponses> {
-    this['🔒'].headers.schema = schema as any
+  ): ContractRoute<TMethod, TPath, TParamsSchema, TQuerySchema, TSchema, TBodySchema, TResponse> {
+    this.__cr.headers ??= {}
+    this.__cr.headers.schema = schema as any
     return this as any
   }
 
@@ -125,9 +107,10 @@ export class ContractRoute<
     TQuerySchema,
     THeadersSchema,
     TSchema,
-    TResponses
+    TResponse
   > {
-    this['🔒'].body.schema = schema as any
+    this.__cr.body ??= {}
+    this.__cr.body.schema = schema as any
     return this as any
   }
 
@@ -147,32 +130,15 @@ export class ContractRoute<
     TQuerySchema,
     THeadersSchema,
     TBodySchema,
-    MergeRouteResponses<TResponses, { [K in TStatus]: RouteResponse<TStatus, TBody, THeaders> }>
+    MergeUnions<TResponse, RouteResponse<TStatus, TBody, THeaders>>
   > {
-    this['🔒'].responses[response.status] = response
+    this.__cr.responses ??= []
+    this.__cr.responses.push(response as any)
 
     return this as any
   }
 
-  use<T extends ContractPlugin>(
-    plugin: T
-  ): ContractRoute<
-    TMethod,
-    TPath,
-    TParamsSchema,
-    TQuerySchema,
-    THeadersSchema,
-    TBodySchema,
-    T extends ContractPlugin<infer T2Responses>
-      ? MergeRouteResponses<TResponses, T2Responses>
-      : never
-  > {
-    const responses = plugin['🔒'].responses
-
-    for (const key in responses) {
-      ;(this['🔒'].responses as any)[key] = responses[key]
-    }
-
-    return this as any
+  use<T extends ContractPlugin>(plugin: T): ContractRouteUsePlugin<this, T> {
+    return contractRouteUsePlugin(this, [plugin])
   }
 }

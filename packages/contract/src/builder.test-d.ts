@@ -62,10 +62,38 @@ it('can use plugin', () => {
 
   const builder2 = builder.use(authPlugin)
 
-  const route = builder2.route({ method: 'GET', path: '/foo' })
+  const headerSchema = object({
+    token: string(),
+  })
 
-  expectTypeOf(route['🔒'].responses['401']).toMatchTypeOf<{
-    status: 401
-    body?: typeof bodySchema
-  }>()
+  const route = builder2
+    .route({ method: 'GET', path: '/foo' })
+    .response({
+      status: 401,
+      headers: headerSchema,
+    })
+    .response({
+      status: 402,
+      body: bodySchema,
+      headers: headerSchema,
+    })
+
+  expectTypeOf(route['__cr'].responses).toMatchTypeOf<
+    | (
+        | {
+            status: 401
+            body?: typeof bodySchema
+          }
+        | {
+            status: 401
+            headers?: typeof headerSchema
+          }
+        | {
+            status: 402
+            body?: typeof bodySchema
+            headers?: typeof headerSchema
+          }
+      )[]
+    | undefined
+  >()
 })

@@ -1,11 +1,10 @@
 import {
   ContractRoute,
   ContractRouter,
+  InferOutputResponse,
   isContractRoute,
   OptionalOnUndefined,
-  RouteResponse,
 } from '@orpc/contract'
-import { IsAny } from 'type-fest'
 import type { InferInput } from 'valibot'
 
 export function createORPCClient<TContract extends ContractRouter>(opts: {
@@ -21,7 +20,7 @@ export function createORPCClient<TContract extends ContractRouter>(opts: {
         if (contract === undefined) return undefined
 
         if (isContractRoute(contract)) {
-          const internal = contract['🔒'] as ContractRoute['🔒']
+          const internal = contract['__cr']
           return async (input: ORPCRouteClientInput): Promise<ORPCRouteClientOutput> => {
             let contractPath = internal.path.startsWith('/') ? '.' + internal.path : internal.path
 
@@ -98,8 +97,8 @@ export type ORPCRouteClient<TContract extends ContractRoute = ContractRoute> = {
 
 export type ORPCRouteClientInput<TContract extends ContractRoute = ContractRoute> =
   TContract extends ContractRoute<
-    infer _TMethod,
-    infer _TPath,
+    any,
+    any,
     infer TParamsSchema,
     infer TQuerySchema,
     infer THeadersSchema,
@@ -114,32 +113,6 @@ export type ORPCRouteClientInput<TContract extends ContractRoute = ContractRoute
     : unknown
 
 export type ORPCRouteClientOutput<TContract extends ContractRoute = ContractRoute> =
-  TContract extends ContractRoute<
-    infer _TMethod,
-    infer _TPath,
-    infer _TParamsSchema,
-    infer _TQuerySchema,
-    infer _THeadersSchema,
-    infer _TBodySchema,
-    infer TResponses
-  >
-    ? IsAny<TResponses> extends false
-      ? {
-          [K in keyof TResponses]: TResponses[K] extends RouteResponse<
-            infer TStatus,
-            infer TBody,
-            infer THeaders
-          >
-            ? {
-                status: TStatus
-                body: InferInput<TBody>
-                headers: InferInput<THeaders>
-              }
-            : unknown
-        }[keyof TResponses]
-      : {
-          status: 204
-          body: undefined
-          headers: Record<string, never>
-        }
-    : unknown
+  TContract extends ContractRoute<any, any, any, any, any, any, infer TResponse>
+    ? InferOutputResponse<TResponse>
+    : never

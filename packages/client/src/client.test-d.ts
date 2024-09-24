@@ -60,8 +60,6 @@ it('works', () => {
   expectTypeOf(client.ping).toEqualTypeOf<
     (input: { params?: any; query?: any; headers?: any; body?: any }) => Promise<{
       status: 204
-      body: undefined
-      headers: Record<string, never>
     }>
   >()
 

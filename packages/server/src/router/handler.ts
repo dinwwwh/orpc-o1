@@ -44,8 +44,8 @@ export function createServerRouterHandler<T extends ServerRouter>(
         }
 
         router.add(
-          contract['🔒'].method,
-          convertOpenapiPathToTrekRouterPath(contract['🔒'].path),
+          contract['__cr'].method,
+          convertOpenapiPathToTrekRouterPath(contract['__cr'].path),
           item
         )
       } else {
@@ -70,7 +70,7 @@ export function createServerRouterHandler<T extends ServerRouter>(
         }
       }
 
-      const internalContract = routeSpec['🔓'].contract['🔒']
+      const internalContract = routeSpec['🔓'].contract.__cr
 
       const params: Record<string, string> = {}
       for (const { name, value } of paramsArr) {
@@ -79,24 +79,24 @@ export function createServerRouterHandler<T extends ServerRouter>(
 
       const [validParams, validQuery, validHeaders, validBody] = await Promise.all([
         (async () => {
-          if (!internalContract.ParamsSchema) return params
+          if (!internalContract.params?.schema) return params
 
-          return await parseAsync(internalContract.ParamsSchema, params)
+          return await parseAsync(internalContract.params?.schema, params)
         })(),
         (async () => {
-          if (!internalContract.QuerySchema) return input.query
+          if (!internalContract.query?.schema) return input.query
 
-          return await parseAsync(internalContract.QuerySchema, input.query)
+          return await parseAsync(internalContract.query?.schema, input.query)
         })(),
         (async () => {
-          if (!internalContract.HeadersSchema) return input.headers
+          if (!internalContract.headers?.schema) return input.headers
 
-          return await parseAsync(internalContract.HeadersSchema, input.headers)
+          return await parseAsync(internalContract.headers?.schema, input.headers)
         })(),
         (async () => {
-          if (!internalContract.BodySchema) return input.body
+          if (!internalContract.body?.schema) return input.body
 
-          return await parseAsync(internalContract.BodySchema, input.body)
+          return await parseAsync(internalContract.body?.schema, input.body)
         })(),
       ])
 

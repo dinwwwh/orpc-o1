@@ -1,20 +1,15 @@
-import { IsAny, Merge } from 'type-fest'
-import { RouteResponse, RouteResponses } from '../route/types'
+import { RouteResponse } from '../route/types'
 import { HTTPStatus } from '../types/http'
+import { MergeUnions } from '../types/utils'
 import { BodySchema, HeadersSchema } from '../types/validation'
 
-export class ContractPlugin<TResponses extends RouteResponses = any> {
-  public ['🔒']: {
-    name: string
-    responses: TResponses
-  }
-
-  constructor(opts: { name: string }) {
-    this['🔒'] = {
-      responses: {} as any,
-      ...opts,
+export class ContractPlugin<TResponse extends RouteResponse = any> {
+  constructor(
+    public __cp: {
+      name: string
+      responses?: TResponse[]
     }
-  }
+  ) {}
 
   response<
     TStatus extends HTTPStatus,
@@ -25,12 +20,9 @@ export class ContractPlugin<TResponses extends RouteResponses = any> {
     status: TStatus
     body?: TBodySchema
     headers?: THeadersSchema
-  }): ContractPlugin<
-    IsAny<TResponses> extends true
-      ? { [K in TStatus]: RouteResponse<TStatus, TBodySchema, THeadersSchema> }
-      : Merge<TResponses, { [K in TStatus]: RouteResponse<TStatus, TBodySchema, THeadersSchema> }>
-  > {
-    this['🔒'].responses[response.status] = response
+  }): ContractPlugin<MergeUnions<TResponse, RouteResponse<TStatus, TBodySchema, THeadersSchema>>> {
+    this.__cp.responses ??= []
+    this.__cp.responses.push(response as any)
 
     return this as any
   }

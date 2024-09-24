@@ -15,14 +15,14 @@ it('can prefix path', () => {
     .prefix('/api')
 
   expect(router.ping).toMatchObject({
-    ['🔒']: {
+    __cr: {
       method: 'GET',
       path: '/api/ping',
     },
   })
 
   expect(router.foo.bar).toMatchObject({
-    ['🔒']: {
+    __cr: {
       method: 'GET',
       path: '/api/bar',
     },
@@ -30,7 +30,7 @@ it('can prefix path', () => {
 
   // AGAIN: prefix is special case
   expect({ ...router.prefix }).toMatchObject({
-    ['🔒']: {
+    __cr: {
       method: 'GET',
       path: '/api/prefix',
     },

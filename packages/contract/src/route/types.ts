@@ -1,6 +1,7 @@
-import { IsAny, Merge } from 'type-fest'
+import { IsAny } from 'type-fest'
 import { HTTPStatus } from '../types/http'
-import { BodySchema, HeadersSchema } from '../types/validation'
+import { OptionalOnUndefined } from '../types/utils'
+import { BodySchema, HeadersSchema, InferInput, InferOutput } from '../types/validation'
 
 export interface RouteResponse<
   TStatus extends HTTPStatus = any,
@@ -13,9 +14,22 @@ export interface RouteResponse<
   headers?: THeadersSchema
 }
 
-export type RouteResponses = Partial<Record<HTTPStatus, RouteResponse>>
+export type InferInputResponse<TResponse extends RouteResponse> = IsAny<TResponse> extends true
+  ? void
+  : TResponse extends RouteResponse<infer TStatus, infer TBody, infer THeaders>
+  ? OptionalOnUndefined<{
+      status: TStatus
+      body: InferInput<TBody>
+      headers: InferInput<THeaders>
+    }>
+  : never
 
-export type MergeRouteResponses<
-  TA extends RouteResponses,
-  TB extends RouteResponses
-> = IsAny<TA> extends true ? TB : IsAny<TB> extends true ? TA : Merge<TA, TB>
+export type InferOutputResponse<TResponse extends RouteResponse> = IsAny<TResponse> extends true
+  ? { status: 204 }
+  : TResponse extends RouteResponse<infer TStatus, infer TBody, infer THeaders>
+  ? {
+      status: TStatus
+      body: InferOutput<TBody>
+      headers: InferOutput<THeaders>
+    }
+  : never
