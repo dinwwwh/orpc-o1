@@ -32,15 +32,16 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./🔒/*": "./src/*.ts"
+    "./🔒/*": {
+      "types": "./src/*.ts"
+    }
   },
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
-    "build": "vite build",
-    "build:watch": "vite build --watch",
+    "build": "vite build && tsc -b --noCheck",
     "type:check": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest watch"
@@ -51,12 +52,11 @@
     "valibot": "^0.42.0"
   },
   "devDependencies": {
-    "@dinwwwh/tsconfig": "latest",
+    "@dinwwwh/tsconfig": "^0.0.11",
     "@orpc/server": "workspace:*",
     "@types/node": "latest",
     "typescript": "latest",
     "vite": "latest",
-    "vite-plugin-dts": "latest",
     "vitest": "^2.1.1"
   }
 }

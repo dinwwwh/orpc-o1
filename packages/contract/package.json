@@ -32,32 +32,32 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./🔓/*": "./src/*.ts"
+    "./🔓/*": {
+      "types": "./src/*.ts"
+    }
   },
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
-    "build": "vite build",
-    "build:watch": "vite build --watch",
+    "build": "vite build && tsc -b --noCheck",
     "type:check": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest watch"
   },
-  "devDependencies": {
-    "@dinwwwh/tsconfig": "^0.0.6",
-    "@types/node": "^22.5.5",
+  "dependencies": {
     "radash": "^12.1.0",
-    "typescript": "^5.6.2",
-    "vite": "^5.4.6",
-    "vite-plugin-dts": "^4.2.1",
-    "vitest": "^2.1.1"
+    "type-fest": "^4.26.1"
   },
   "peerDependencies": {
     "valibot": "^0.42.0"
   },
-  "dependencies": {
-    "type-fest": "^4.26.1"
+  "devDependencies": {
+    "@dinwwwh/tsconfig": "^0.0.11",
+    "@types/node": "^22.5.5",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.6",
+    "vitest": "^2.1.1"
   }
 }

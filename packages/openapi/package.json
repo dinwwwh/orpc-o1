@@ -32,32 +32,32 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./🔒/*": "./src/*.ts"
+    "./🔒/*": {
+      "types": "./src/*.ts"
+    }
   },
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
-    "build": "vite build",
-    "build:watch": "vite build --watch",
+    "build": "vite build && tsc -b --noCheck",
     "type:check": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest watch"
-  },
-  "devDependencies": {
-    "@dinwwwh/tsconfig": "latest",
-    "@readme/openapi-parser": "^2.6.0",
-    "@types/node": "latest",
-    "typescript": "latest",
-    "vite": "latest",
-    "vite-plugin-dts": "latest",
-    "vitest": "^2.1.1"
   },
   "dependencies": {
     "@orpc/contract": "workspace:*",
     "@valibot/to-json-schema": "^0.2.0",
     "openapi3-ts": "^4.4.0",
     "valibot": "^0.42.0"
+  },
+  "devDependencies": {
+    "@dinwwwh/tsconfig": "^0.0.11",
+    "@readme/openapi-parser": "^2.6.0",
+    "@types/node": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "vitest": "^2.1.1"
   }
 }
